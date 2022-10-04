@@ -25,9 +25,7 @@ def mario_idle_left():
 
 def mario_walk_left():
     clear_canvas()
-    mario_left_image.clip_draw(frame * 70 + 2, 512, 50, 50, 100, 100)  # frame = 1~2 번갈아 가면서 사용
+    mario_left_image.clip_draw(860 - frame * 70, 512, 50, 50, 100, 100)  # frame = 1~2 번갈아 가면서 사용
     update_canvas()
 
-mario_walk_left()
-delay(3)
 close_canvas()
