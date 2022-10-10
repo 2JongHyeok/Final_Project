@@ -85,52 +85,98 @@ def mario_run_left():
     update_canvas()
 def mario_jump_right():
     global need_frames
+    clear_canvas()
     if small_mario:
-        pass
+        mario_right_image.clip_draw(355, 457, 50, 50, mario_x, mario_y)
+        need_frames = 1
     else:
-        pass
+        mario_right_image.clip_draw(355, 206, 50, 70, mario_x, mario_y)
+        need_frames = 1
+    update_canvas()
 
 def mario_jump_left():
+    clear_canvas()
     global need_frames
     if small_mario:
-        pass
+         mario_left_image.clip_draw(425, 457, 50, 50, mario_x, mario_y)
+         need_frames = 1
     else:
-        pass
+        mario_left_image.clip_draw(425, 206, 50, 70, mario_x, mario_y)
+        need_frames = 1
+    update_canvas()
+
+def mario_fall_right():
+    clear_canvas()
+    global need_frames
+    if small_mario:
+        mario_right_image.clip_draw(495, 206, 50, 50, mario_x, mario_y)
+        need_frames = 1
+    else:
+        mario_right_image.clip_draw(494, 206, 50, 70, mario_x, mario_y)
+        need_frames = 1
+    update_canvas()
+
+def mario_fall_left():
+    clear_canvas()
+    global need_frames
+    if small_mario:
+        mario_left_image.clip_draw(285, 457, 50, 50, mario_x, mario_y)
+        need_frames = 1
+    else:
+        mario_left_image.clip_draw(285, 206, 50, 70, mario_x, mario_y)
+        need_frames = 1
+    update_canvas()
 
 def mario_sit_right():
+    clear_canvas()
     global need_frames
     if small_mario:
-        pass
+        mario_right_image.clip_draw(772, 457, 50, 50, mario_x, mario_y)
+        need_frames = 1
     else:
-        pass
+        mario_right_image.clip_draw(772, 206, 50, 50, mario_x, mario_y)
+        need_frames = 1
+    update_canvas()
 
 def mario_sit_left():
     global need_frames
+    clear_canvas()
     if small_mario:
-        pass
+        mario_left_image.clip_draw(73, 457, 50, 50, mario_x, mario_y)
+        need_frames = 1
+
     else:
-        pass
+        mario_left_image.clip_draw(73, 206, 50, 50, mario_x, mario_y)
+        need_frames = 1
+    update_canvas()
 
 def mario_up():
-    if small_mario:
-        global need_frames
-        pass
-    else:
-        pass
-
-def mario_die():
+    clear_canvas()
     global need_frames
     if small_mario:
-        pass
+        mario_right_image.clip_draw((frame + 6) * 70 + 15, 403, 50, 50, mario_x, mario_y)
+        need_frames = 2
     else:
-        pass
+        mario_right_image.clip_draw((frame + 6) * 70 + 15, 104, 50, 70, mario_x, mario_y)
+        need_frames = 2
+    update_canvas()
+
+def mario_die():
+    clear_canvas()
+    global need_frames
+    if frame == 1:
+        mario_right_image.clip_draw(632, 104, 50, 50, mario_x, mario_y)
+    else:
+        mario_right_image.clip_draw(632, 403, 50, 50, mario_x, mario_y)
+    need_frames = 2
+    update_canvas()
 
 def main():
     global need_frames
     global frame
     i = 0
-    while i < 100:
-        mario_run_left()
+    while i < 50:
+        mario_die()
         delay(0.1)
         frame = i % need_frames
         i += 1
