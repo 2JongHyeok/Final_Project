@@ -181,6 +181,3 @@ def main():
         frame = i % need_frames
         i += 1
     close_canvas()
-
-
-main()
