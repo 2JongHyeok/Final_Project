@@ -40,11 +40,11 @@ def draw_mansion():
     while True:
         clear_canvas()
         mansion.draw_mansion_1()
-        delay(0.001)
+        delay(0.05)
         update_canvas()
         clear_canvas()
         mansion.draw_mansion_2()
-        delay(0.001)
+        delay(0.05)
         update_canvas()
         x += 1
         if x % 3 == 0:
