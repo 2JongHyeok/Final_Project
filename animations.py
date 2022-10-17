@@ -46,12 +46,6 @@ class Mario:
                 mario_jump_left()
 
 
-
-# 사용할 전역 변수들 모음
-
-mario = Mario()
-game_running = True
-
 def mario_idle_right():
     global mario
     clear_canvas()
@@ -250,7 +244,7 @@ def handle_events():
                             mario.mario_x -= 1
                             mario.mario_head_right = False
                     else:
-                        mario.user_input = 5
+                        mario.user_input = 4
                         mario.mario_y -= 1
                         if event.key == SDLK_RIGHT:
                             mario.mario_x += 1
@@ -264,12 +258,27 @@ def handle_events():
             mario.dir_x = 0
 
 
+def enter():
+    global mario
+
+
+
+open_canvas()
+
+# 사용할 전역 변수들 모음
+mario = Mario()
+game_running = True
+
+
 
 while game_running:
-    clear_canvas()
-    mario.update()
-    mario.draw()
     handle_events()
+
+    mario.update()
+    clear_canvas()
+
+    mario.draw()
+    update_canvas()
 
 
 close_canvas()
