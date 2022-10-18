@@ -16,45 +16,131 @@ class Mario:
         self.mario_head_right = True
         self.need_frames = 1
         self.frame = 0
+        self.mario_animation_frame = 0
+        self.mario_animation_count = 0
+        self.right = False
+        self.left = False
+        self.run_r = False
+        self.run_l = False
+        self.jump = False
+        self.fall = False
+        self.attack = False
+        self.sit = False
+        self.up = False
+        self.idle = True
         self.user_input = 0
         self.right_image = load_image('mario_right.png')
         self.left_image = load_image('mario_left.png')
+        self.y_gravity = 1
+        self.jump_height = 15
+        self.y_velocity = self.jump_height
+
 
     def update(self):
-        self.frame = (self.frame + 1) % self.need_frames
+        self.mario_animation_frame = self.need_frames * 30
+        if self.mario_animation_count == self.mario_animation_frame:
+            self.mario_animation_count = 0
+        self.mario_animation_count += 1
+        if self.mario_animation_count % 30 == 0:
+            self.frame = (self.frame + 1) % self.need_frames
+
         if self.real_mario_x > 31 and self.real_mario_x < 800:
-            self.draw_mario_x += self.dir_x * 0.5
+            if self.run_l or self.run_r:
+                self.draw_mario_x += self.dir_x * 1
+            else:
+                self.draw_mario_x += self.dir_x * 0.5
         elif self.real_mario_x >= 2400 and self.real_mario_x < 3170:
-            self.draw_mario_x += self.dir_x * 0.5
+            if self.run_l or self.run_r:
+                self.draw_mario_x += self.dir_x * 1
+            else:
+                self.draw_mario_x += self.dir_x * 0.5
 
         if self.real_mario_x + self.dir_x * 0.5 >= 30 and self.real_mario_x + self.dir_x * 0.5 <= 3170:
-            self.real_mario_x += self.dir_x * 0.5
-        self.draw_mario_y += self.dir_y * 0.5
+            if self.run_l or self.run_r:
+                self.real_mario_x += self.dir_x * 1
+            else:
+                self.real_mario_x += self.dir_x * 0.5
 
+        if self.jump:
+            self.draw_mario_y += self.y_velocity *0.05
+            self.y_velocity -= self.y_gravity *0.05
+            if self.y_velocity <= 0:
+                self.fall = True
+            if self.y_velocity < - self.jump_height:
+                self.jump = False
+                self.fall = False
+                self.y_velocity = self.jump_height
+                self.idle = True
 
     def draw(self):
         if self.mario_head_right:
-            if self.user_input == 0:
+            if self.idle:
                 mario_idle_right()
-            elif self.user_input == 1:
-                mario_walk_right()
-            elif self.user_input == 2:
-                mario_run_right()
-            elif self.user_input == 3:
+            elif self.right:
+                if self.jump:
+                    if self.fall:
+                        mario_fall_right()
+                    else:
+                        mario_jump_right()
+                elif self.sit:
+                    mario.right = False
+                elif self.run_r:
+                    mario_run_right()
+                else:
+                    mario_walk_right()
+            elif self.sit:
                 mario_sit_right()
-            elif self.user_input == 4:
-                mario_jump_right()
+                if self.right:
+                    mario_sit_right()
+                elif self.left:
+                    mario_sit_left()
+                    self.mario_head_right = False
+            elif self.jump:
+                if self.y_velocity <= 0:
+                    if self.left:
+                        mario_fall_left()
+                    else:
+                        mario_fall_right()
+                else:
+                    if self.left:
+                        mario_jump_left()
+                    else:
+                        mario_jump_right()
+
         else:
-            if self.user_input == 0:
+            if self.idle:
                 mario_idle_left()
-            elif self.user_input == 1:
-                mario_walk_left()
-            elif self.user_input == 2:
-                mario_run_left()
-            elif self.user_input == 3:
+            elif self.left:
+                if self.jump:
+                    if self.fall:
+                        mario_fall_left()
+                    else:
+                        mario_jump_left()
+                elif self.sit:
+                    self.left = False
+                elif self.run_l:
+                    mario_run_left()
+                else:
+                    mario_walk_left()
+            elif self.sit:
                 mario_sit_left()
-            elif self.user_input == 4:
-                mario_jump_left()
+                if self.right:
+                    mario_sit_right()
+                    self.mario_head_right = True
+                elif self.left:
+                    mario_sit_left()
+            elif self.jump:
+                if self.y_velocity <= 0:
+                    if self.right:
+                        mario_fall_right()
+                    else:
+                        mario_fall_left()
+                else:
+                    if self.right:
+                        mario_jump_right()
+                    else:
+                        mario_jump_left()
+
 
 
 class Background():
@@ -64,7 +150,7 @@ class Background():
         self.starmap_3 = load_image('star_map_3.png')
         self.mansion_1 = load_image('mansion_1.png')
         self.mansion_2 = load_image('mansion_2.png')
-        self.stage = 1
+        self.stage = 2
         self.frame = 0
         self.need_frame = 0
         self.play_x = 0
@@ -100,8 +186,8 @@ class Background():
             self.mansion_1.draw_to_origin((1600 * i)-self.play_x, 0, 1600, 800)
 
     def draw_mansion_2(self):
-        self.mansion_2.draw_to_origin(- self.play_x, 0, 1600, 800)
-        self.mansion_2.draw_to_origin(1600 - self.play_x, 0, 1600, 800)
+        for i in range(0, 11):
+            self.mansion_2.draw_to_origin((1600 * i) - self.play_x, 0, 1600, 800)
 
     def draw_star_1(self):
         for i in range(0, 11):
@@ -133,8 +219,8 @@ def mario_idle_right():
 
 def mario_walk_right():
     global mario
-    if mario.small_mario:
-        mario.right_image.clip_draw(mario.frame*70+2, 512, 50, 50, mario.draw_mario_x, mario.draw_mario_y) # frame = 1~2 번갈아 가면서 사용
+    if mario.small_mario: # frame = 1~2 번갈아 가면서 사용
+        mario.right_image.clip_draw(mario.frame*70+2, 512, 50, 50, mario.draw_mario_x, mario.draw_mario_y)
         mario.need_frames = 5
     else:
         mario.right_image.clip_draw(mario.frame*70+2, 306, 50, 70, mario.draw_mario_x, mario.draw_mario_y)
@@ -162,7 +248,7 @@ def mario_run_right():
     global mario
     if mario.small_mario:
         mario.right_image.clip_draw(mario.frame * 70 + 352, 512, 50, 50, mario.draw_mario_x, mario.draw_mario_y)  # frame = 1~2 번갈아 가면서 사용
-        mario.need_frames = 4
+        mario.need_frames = 2
     else:
         if mario.frame == 0:
             mario.right_image.clip_draw(352, 306, 49, 70, mario.draw_mario_x+2, mario.draw_mario_y)
@@ -203,7 +289,7 @@ def mario_jump_left():
 def mario_fall_right():
     global mario
     if mario.small_mario:
-        mario.right_image.clip_draw(495, 206, 50, 50, mario.draw_mario_x, mario.draw_mario_y)
+        mario.right_image.clip_draw(495, 457, 50, 50, mario.draw_mario_x, mario.draw_mario_y)
         mario.need_frames = 1
     else:
         mario.right_image.clip_draw(494, 206, 50, 70, mario.draw_mario_x, mario.draw_mario_y)
@@ -262,51 +348,56 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_DOWN and event.key == SDLK_LEFT:
-                mario.mario_head_right = False
-                mario.user_input = 3
-            elif event.key == SDLK_DOWN and event.key == SDLK_RIGHT:
-                mario.mario_head_right = True
-                mario.user_input = 3
-
-            elif event.key == SDLK_RIGHT:
-                mario.mario_head_right = True
+            mario.idle = False
+            if event.key == SDLK_RIGHT:
                 mario.user_input = 1
-                mario.dir_x = 1
-            elif event.key == SDLK_LEFT:
-                mario.mario_head_right = False
+                mario.mario_head_right = True
+                if mario.left:
+                    mario.left = False
+                mario.right = True
+                if not mario.sit:
+                    mario.dir_x = 1
+            if event.key == SDLK_LEFT:
                 mario.user_input = 1
-                mario.dir_x = -1
-            elif event.key == SDLK_DOWN:
-                mario.user_input = 3
+                mario.mario_head_right = False
+                if mario.right:
+                    mario.right = False
+                mario.left = True
+                if not mario.sit:
+                    mario.dir_x = -1
+            if event.key == SDLK_DOWN:
+                mario.user_input = 1
+                mario.sit = True
+                if mario.right:
+                    mario.right = False
+                # mario.user_input = 3
                 if event.key == SDLK_RIGHT:
                     mario.mario_head_right = True
                 elif event.key == SDLK_LEFT:
                     mario.mario_head_right = False
-            elif event.key == SDLK_SPACE:
-                for i in range(10):
-                    if i < 5:
-                        mario.user_input = 4
-                        mario.mario_y += 1
-                        if event.key == SDLK_RIGHT:
-                            mario.mario_x += 1
-                            mario.mario_head_right = True
-                        elif event.key == SDLK_LEFT:
-                            mario.mario_x -= 1
-                            mario.mario_head_right = False
-                    else:
-                        mario.user_input = 4
-                        mario.mario_y -= 1
-                        if event.key == SDLK_RIGHT:
-                            mario.mario_x += 1
-                            mario.mario_head_right = True
-                        elif event.key == SDLK_LEFT:
-                            mario.mario_x -= 1
-                            mario.mario_head_right = False
+            if event.key == SDLK_SPACE:
+                # mario.sit = False
+                # mario.left = False
+                # mario.right = False
+                mario.jump = True
+            if event.key == SDLK_LSHIFT:
+                mario.run_r = True
+                mario.run_l = True
 
         if event.type == SDL_KEYUP:
-            mario.user_input = 0
+            if event.key == SDLK_RIGHT:
+                mario.right = False
+            if event.key == SDLK_LEFT:
+                mario.left = False
+            if event.key == SDLK_DOWN:
+                mario.sit = False
+            if event.key == SDLK_LSHIFT:
+                mario.run_r = False
+                mario.run_l = False
+            if not mario.right and not mario.left and not mario.sit and not mario.jump and not mario.fall and not mario.run_r and not mario.run_l:
+                mario.idle = True
             mario.dir_x = 0
+
 
 
 
@@ -342,7 +433,7 @@ def draw():
     global mario
     clear_canvas()
     draw_world()
-    print(mario.real_mario_x)
+    # print(mario.real_mario_x)
     update_canvas()
 
 
