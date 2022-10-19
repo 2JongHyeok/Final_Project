@@ -44,22 +44,33 @@ class Mario:
         if self.mario_animation_count % 30 == 0:
             self.frame = (self.frame + 1) % self.need_frames
 
+        if self.right:
+            if self.run_r:
+                self.dir_x = 1.5
+            else:
+                self.dir_x = 1
+            if self.sit:
+                self.dir_x = 0
+        elif self.left:
+            if self.run_l:
+                self.dir_x = -1.5
+            else:
+                self.dir_x = -1
+            if self.sit:
+                self.dir_x = 0
+        elif self.idle:
+            self.dir_x = 0
+        # elif self.sit:
+        #     self.dir_x = 0
+
+
         if self.real_mario_x > 31 and self.real_mario_x < 800:
-            if self.run_l or self.run_r:
-                self.draw_mario_x += self.dir_x * 1
-            else:
-                self.draw_mario_x += self.dir_x * 0.5
+            self.draw_mario_x += self.dir_x * 0.5
         elif self.real_mario_x >= 2400 and self.real_mario_x < 3170:
-            if self.run_l or self.run_r:
-                self.draw_mario_x += self.dir_x * 1
-            else:
-                self.draw_mario_x += self.dir_x * 0.5
+            self.draw_mario_x += self.dir_x * 0.5
 
         if self.real_mario_x + self.dir_x * 0.5 >= 30 and self.real_mario_x + self.dir_x * 0.5 <= 3170:
-            if self.run_l or self.run_r:
-                self.real_mario_x += self.dir_x * 1
-            else:
-                self.real_mario_x += self.dir_x * 0.5
+            self.real_mario_x += self.dir_x * 0.5
 
         if self.jump:
             self.draw_mario_y += self.y_velocity *0.05
@@ -106,6 +117,9 @@ class Mario:
                         mario_jump_left()
                     else:
                         mario_jump_right()
+            elif self.run_r:
+                mario_run_right()
+
 
         else:
             if self.idle:
@@ -140,6 +154,8 @@ class Mario:
                         mario_jump_right()
                     else:
                         mario_jump_left()
+            elif self.run_l:
+                mario_run_left()
 
 
 
@@ -150,7 +166,7 @@ class Background():
         self.starmap_3 = load_image('star_map_3.png')
         self.mansion_1 = load_image('mansion_1.png')
         self.mansion_2 = load_image('mansion_2.png')
-        self.stage = 2
+        self.stage = 1
         self.frame = 0
         self.need_frame = 0
         self.play_x = 0
@@ -352,33 +368,23 @@ def handle_events():
             if event.key == SDLK_RIGHT:
                 mario.user_input = 1
                 mario.mario_head_right = True
-                if mario.left:
-                    mario.left = False
+                mario.left = False
                 mario.right = True
-                if not mario.sit:
-                    mario.dir_x = 1
+                mario.dir_x = -1
             if event.key == SDLK_LEFT:
                 mario.user_input = 1
                 mario.mario_head_right = False
-                if mario.right:
-                    mario.right = False
+                mario.right = False
                 mario.left = True
-                if not mario.sit:
-                    mario.dir_x = -1
+                mario.dir_x = 1
             if event.key == SDLK_DOWN:
                 mario.user_input = 1
                 mario.sit = True
                 if mario.right:
                     mario.right = False
-                # mario.user_input = 3
-                if event.key == SDLK_RIGHT:
-                    mario.mario_head_right = True
-                elif event.key == SDLK_LEFT:
-                    mario.mario_head_right = False
+                if mario.left:
+                    mario.left = False
             if event.key == SDLK_SPACE:
-                # mario.sit = False
-                # mario.left = False
-                # mario.right = False
                 mario.jump = True
             if event.key == SDLK_LSHIFT:
                 mario.run_r = True
@@ -387,8 +393,10 @@ def handle_events():
         if event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 mario.right = False
+
             if event.key == SDLK_LEFT:
                 mario.left = False
+
             if event.key == SDLK_DOWN:
                 mario.sit = False
             if event.key == SDLK_LSHIFT:
