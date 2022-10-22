@@ -3,6 +3,14 @@ import game_framework
 import title_state
 import random
 
+
+class tiles:
+    def __init__(self):
+        self.tile = 0
+        self.x = 0
+        self.y = 0
+
+
 class Mario:
     def __init__(self):
         self.small_mario = True
@@ -257,7 +265,7 @@ def mario_walk_left():
         mario.left_image.clip_draw(860 - mario.frame * 70, 512, 50, 50, mario.draw_mario_x, mario.draw_mario_y)  # frame = 1~2 번갈아 가면서 사용
         mario.need_frames = 5
     else:
-        mario.left_image.clip_draw(860 - mario.frame * 70, 306, 50, 70, mario.draw_mario_x, mario.draw_mario_y)
+        mario.left_image.clip_draw(860 - mario.frame * 70, 306, 50, 70, mario.draw_mario_x, mario.draw_mario_y+8)
         mario.need_frames = 4
 
 def mario_run_right():
@@ -275,13 +283,13 @@ def mario_run_right():
 def mario_run_left():
     global mario
     if mario.small_mario:
-        mario.left_image.clip_draw(493 - mario.frame * 70, 512, 50, 50, mario.draw_mario_x, mario.draw_mario_y)  # frame = 1~2 번갈아 가면서 사용
+        mario.left_image.clip_draw(505 - mario.frame * 70, 512, 50, 50, mario.draw_mario_x, mario.draw_mario_y)  # frame = 1~2 번갈아 가면서 사용
         mario.need_frames = 4
     else:
         if mario.frame == 0:
-            mario.left_image.clip_draw(497 - mario.frame * 70, 306, 52, 70, mario.draw_mario_x + 2, mario.draw_mario_y)
+            mario.left_image.clip_draw(505 - mario.frame * 70, 306, 52, 70, mario.draw_mario_x + 2, mario.draw_mario_y)
         else:
-            mario.left_image.clip_draw(493 - mario.frame * 70, 306, 52, 70, mario.draw_mario_x, mario.draw_mario_y)
+            mario.left_image.clip_draw(505 - mario.frame * 70, 306, 52, 70, mario.draw_mario_x, mario.draw_mario_y)
         mario.need_frames = 3
 
 def mario_jump_right():
@@ -389,6 +397,11 @@ def handle_events():
             if event.key == SDLK_LSHIFT:
                 mario.run_r = True
                 mario.run_l = True
+            if event.key == SDLK_i:
+                if mario.small_mario:
+                    mario.small_mario = False
+                else:
+                    mario.small_mario = True
 
         if event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
@@ -411,6 +424,19 @@ def handle_events():
 
 
 # 사용할 전역 변수들 모음
+max_x = 3600
+max_y = 800
+rows = 200
+cols = 900
+
+World_tiles = [[0 for j in range(cols)] for i in range(rows)]
+
+for i in range(rows):
+    for j in range(cols):
+        World_tiles[i][j] = tiles()
+
+
+
 mario = None
 background = None
 game_running = None

@@ -1,6 +1,7 @@
 from pico2d import *
 open_canvas()
 
+
 class Mario:
     def __init__(self):
         self.small_mario = True
@@ -266,6 +267,8 @@ def enter():
 open_canvas()
 
 # 사용할 전역 변수들 모음
+
+
 mario = Mario()
 game_running = True
 
