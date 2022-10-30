@@ -4,11 +4,36 @@ import title_state
 import random
 
 
-class tiles:
+class Tiles:
     def __init__(self):
-        self.tile = 0
+        self.tile = 0 # 1 : 평평, 2 : 왼쪽, 3: 오른쪽, 4 : 토관
         self.x = 0
         self.y = 0
+        self.image = None
+        self.image_flag = 1
+        self.pmario = Mario().real_mario_x
+        self.nmario = Mario().real_mario_x
+
+    def update(self):
+        self.pmario = self.nmario
+        self.nmario = Mario().real_mario_x
+        if self.image_flag:
+            if self.tile == 0:
+                self.image = load_image('grass_left.png')
+            elif self.tile == 1:
+                self.image = load_image('grass_middle.png')
+            elif self.tile == 2:
+                self.image = load_image('grass_right.png')
+            elif self.tile == 3:
+                self.image = load_image('pipe_left_top.png')
+            elif self.tile == 4:
+                self.image = load_image('pipe_right_top.png')
+            self.image_flag = 0
+        self.x -= self.pmario - self.nmario
+
+    def draw(self):
+        if self.tile >=0 and self.tile <= 2:
+            self.image.clip_draw_to_origin(0,0,16,16,self.x,self.y, 20,20)
 
 
 class Mario:
@@ -429,21 +454,29 @@ max_y = 800
 rows = 200
 cols = 900
 
-World_tiles = [[0 for j in range(cols)] for i in range(rows)]
-
-for i in range(rows):
-    for j in range(cols):
-        World_tiles[i][j] = tiles()
+# World_tiles = [[0 for j in range(cols)] for i in range(rows)]
+#
+# for i in range(rows):
+#     for j in range(cols):
+#         World_tiles[i][j] = Tiles()
 
 
 
 mario = None
 background = None
 game_running = None
-
+# tiles = Tiles()
+# tiles.tile = 1
+tiles = None
 def enter():
-    global mario, game_running, background
+    global mario, game_running, background,tiles
     mario = Mario()
+    tiles = []
+    for n in range(0,800):
+        tiles.append(Tiles())
+        tiles[n].tile = 1
+        tiles[n].x = n * 20
+        tiles[n].update()
     background = Background()
     game_running = True
 
@@ -453,21 +486,24 @@ def exit():
     del background
 
 def update():
-    global mario, background
+    global mario, background,tiles
     mario.update()
     background.update(mario.real_mario_x)
 
 def draw_world():
-    global mario, background
+    global mario, background, tiles
     background.draw()
+    if len(tiles) > 1:
+        for n in range(0,800):
+            tiles[n].draw()
     mario.draw()
+
 
 
 def draw():
     global mario
     clear_canvas()
     draw_world()
-    # print(mario.real_mario_x)
     update_canvas()
 
 
@@ -478,6 +514,7 @@ def test_self():
     game_framework.run(this_module)
     pico2d.close_canvas()
 
-
+print(__name__)
 if __name__ == '__main__':
     test_self()
+
