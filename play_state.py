@@ -74,14 +74,14 @@ class Mario:
 
         if self.right:
             if self.run_r:
-                self.dir_x = 1.5
+                self.dir_x = 2
             else:
                 self.dir_x = 1
             if self.sit:
                 self.dir_x = 0
         elif self.left:
             if self.run_l:
-                self.dir_x = -1.5
+                self.dir_x = -2
             else:
                 self.dir_x = -1
             if self.sit:
@@ -92,13 +92,19 @@ class Mario:
         #     self.dir_x = 0
 
 
-        if self.real_mario_x > 31 and self.real_mario_x < 800:
-            self.draw_mario_x += self.dir_x
-        elif self.real_mario_x >= 2400 and self.real_mario_x < max_map_size - 30:
-            self.draw_mario_x += self.dir_x
+        # if self.real_mario_x > 30 and self.real_mario_x < 800:
+        #     self.draw_mario_x += self.dir_x
+        # elif self.real_mario_x >= max_map_size - 800 and self.real_mario_x < max_map_size - 31:
+        #     self.draw_mario_x += self.dir_x
+
 
         if self.real_mario_x + self.dir_x >= 30 and self.real_mario_x + self.dir_x <= max_map_size - 30:
             self.real_mario_x += self.dir_x
+
+        if self.real_mario_x < 800:
+            self.draw_mario_x = self.real_mario_x
+        elif self.real_mario_x > max_map_size - 800:
+            self.draw_mario_x = 1600 - (max_map_size - self.real_mario_x)
 
         if self.jump:
             self.real_mario_y += self.y_velocity * 0.2
@@ -198,7 +204,7 @@ class Background():
         self.frame = 0
         self.need_frame = 0
         self.play_x = 0
-        self.max_map = max_map_size / 1600
+        self.max_map = max_map_size // 1600 # for문안에 넣어서 총 몇개의 화면을 출력할지 출력
 
     def update(self, x):
         if self.stage == 0:
@@ -229,23 +235,23 @@ class Background():
                 self.draw_star_3()
 
     def draw_mansion_1(self):
-        for i in range(0, 11):
+        for i in range(0, self.max_map + 1):
             self.mansion_1.draw_to_origin((1600 * i)-self.play_x, 0, 1600, 800)
 
     def draw_mansion_2(self):
-        for i in range(0, 11):
+        for i in range(0, self.max_map + 1):
             self.mansion_2.draw_to_origin((1600 * i) - self.play_x, 0, 1600, 800)
 
     def draw_star_1(self):
-        for i in range(0, 11):
+        for i in range(0, self.max_map + 1):
             self.starmap_1.draw_to_origin((1600 * i) - self.play_x, 0, 1600, 800)
 
     def draw_star_2(self):
-        for i in range(0, 11):
+        for i in range(0, self.max_map + 1):
             self.starmap_2.draw_to_origin((1600 * i) - self.play_x, 0, 1600, 800)
 
     def draw_star_3(self):
-        for i in range(0, 11):
+        for i in range(0, self.max_map + 1):
             self.starmap_3.draw_to_origin((1600 * i) - self.play_x, 0, 1600, 800)
 
 
@@ -507,6 +513,7 @@ def draw():
     clear_canvas()
     draw_world()
     update_canvas()
+    print(mario.real_mario_y)
 
 
 def test_self():
