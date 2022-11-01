@@ -6,17 +6,13 @@ import random
 
 class Tiles:
     def __init__(self):
-        self.tile = 0 # 1 : 평평, 2 : 왼쪽, 3: 오른쪽, 4 : 토관
+        self.tile = 0 # 0 : 왼쪽풀, 1: 가운데풀, 2: 오른쪽풀
         self.x = 0
         self.y = 0
         self.image = None
         self.image_flag = 1
-        self.pmario = Mario().real_mario_x
-        self.nmario = Mario().real_mario_x
 
     def update(self):
-        self.pmario = self.nmario
-        self.nmario = Mario().real_mario_x
         if self.image_flag:
             if self.tile == 0:
                 self.image = load_image('grass_left.png')
@@ -29,7 +25,6 @@ class Tiles:
             elif self.tile == 4:
                 self.image = load_image('pipe_right_top.png')
             self.image_flag = 0
-        self.x -= self.pmario - self.nmario
 
     def draw(self):
         if self.tile >=0 and self.tile <= 2:
@@ -468,13 +463,17 @@ game_running = None
 # tiles = Tiles()
 # tiles.tile = 1
 tiles = None
+
 def enter():
     global mario, game_running, background,tiles
     mario = Mario()
     tiles = []
     for n in range(0,800):
         tiles.append(Tiles())
-        tiles[n].tile = 1
+        if n % 2 == 0:
+            tiles[n].tile = 1
+        else:
+            tiles[n].tile = 0
         tiles[n].x = n * 20
         tiles[n].update()
     background = Background()
