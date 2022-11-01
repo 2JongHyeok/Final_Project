@@ -62,6 +62,7 @@ class Mario:
         self.y_gravity = 1
         self.jump_height = 15
         self.y_velocity = self.jump_height
+        self.pre_y = self.real_mario_y
 
 
     def update(self):
@@ -112,6 +113,7 @@ class Mario:
             if self.y_velocity <= 0:
                 self.fall = True
             if self.y_velocity < - self.jump_height:
+                self.real_mario_y = self.pre_y
                 self.jump = False
                 self.fall = False
                 self.y_velocity = self.jump_height
@@ -312,7 +314,7 @@ def mario_run_right():
 def mario_run_left():
     global mario
     if mario.small_mario:
-        mario.left_image.clip_draw(505 - mario.frame * 70, 512, 50, 50, mario.draw_mario_x, mario.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
+        mario.left_image.clip_draw(510 - mario.frame * 70, 512, 50, 50, mario.draw_mario_x, mario.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
         mario.need_frames = 4
     else:
         if mario.frame == 0:
@@ -333,7 +335,7 @@ def mario_jump_right():
 def mario_jump_left():
     global mario
     if mario.small_mario:
-         mario.left_image.clip_draw(425, 457, 50, 50, mario.draw_mario_x, mario.real_mario_y)
+         mario.left_image.clip_draw(435, 457, 50, 50, mario.draw_mario_x, mario.real_mario_y)
          mario.need_frames = 1
     else:
         mario.left_image.clip_draw(425, 206, 50, 70, mario.draw_mario_x, mario.real_mario_y)
@@ -351,7 +353,7 @@ def mario_fall_right():
 def mario_fall_left():
     global mario
     if mario.small_mario:
-        mario.left_image.clip_draw(285, 457, 50, 50, mario.draw_mario_x, mario.real_mario_y)
+        mario.left_image.clip_draw(300, 457, 50, 50, mario.draw_mario_x, mario.real_mario_y)
         mario.need_frames = 1
     else:
         mario.left_image.clip_draw(285, 206, 50, 70, mario.draw_mario_x, mario.real_mario_y)
@@ -369,11 +371,11 @@ def mario_sit_right():
 def mario_sit_left():
     global mario
     if mario.small_mario:
-        mario.left_image.clip_draw(73, 457, 50, 50, mario.draw_mario_x, mario.real_mario_y)
+        mario.left_image.clip_draw(93, 457, 40, 50, mario.draw_mario_x, mario.real_mario_y)
         mario.need_frames = 1
 
     else:
-        mario.left_image.clip_draw(73, 206, 50, 50, mario.draw_mario_x, mario.real_mario_y)
+        mario.left_image.clip_draw(73, 206, 40, 50, mario.draw_mario_x, mario.real_mario_y)
         mario.need_frames = 1
 
 def mario_up():
