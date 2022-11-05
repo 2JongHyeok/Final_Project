@@ -37,7 +37,7 @@ class Mario:
         self.small_mario = True
         self.draw_mario_x = 100
         self.real_mario_x = 100
-        self.real_mario_y = 30
+        self.real_mario_y = 40
         self.dir_x = 0
         self.dir_y = 0
         self.image = None
@@ -63,6 +63,8 @@ class Mario:
         self.jump_height = 15
         self.y_velocity = self.jump_height
         self.pre_y = self.real_mario_y
+        SDL_IntersectRect
+
 
 
     def update(self):
@@ -482,9 +484,9 @@ def enter():
     for n in range(0,800):
         tiles.append(Tiles())
         if n % 2 == 0:
-            tiles[n].tile = 1
-        else:
             tiles[n].tile = 0
+        else:
+            tiles[n].tile = 2
         tiles[n].x = n * 20
         tiles[n].update()
     background = Background()
