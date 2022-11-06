@@ -24,7 +24,6 @@ class IDLE:
     def enter(self, event):
         self.dir = 0
         self.need_frame = 1
-        self.frame = 0
 
     def exit(self,event):
         pass
@@ -35,20 +34,20 @@ class IDLE:
 
     def draw(self):
         if self.face_dir == 1:
-            if MARIO.small_mario:
-                MARIO.right_image.clip_draw(2, 512, 50, 50, MARIO.draw_mario_x, MARIO.real_mario_y)
-                MARIO.need_frames = 1
+            if self.small_mario:
+                self.right_image.clip_draw(2, 512, 50, 50, self.draw_mario_x, self.real_mario_y)
+                self.need_frames = 1
             else:
-                MARIO.right_image.clip_draw(2, 306, 50, 70, MARIO.draw_mario_x, MARIO.real_mario_y)
-                MARIO.need_frames = 1
+                self.right_image.clip_draw(2, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
+                self.need_frames = 1
         else:
-            if MARIO.small_mario:
-                MARIO.left_image.clip_draw(860, 512, 50, 50, MARIO.draw_mario_x,
-                                           MARIO.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
-                MARIO.need_frames = 1
+            if self.small_mario:
+                self.left_image.clip_draw(860, 512, 50, 50, self.draw_mario_x,
+                                           self.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
+                self.need_frames = 1
             else:
-                MARIO.left_image.clip_draw(860, 306, 50, 70, MARIO.draw_mario_x, MARIO.real_mario_y)
-                MARIO.need_frames = 1
+                self.left_image.clip_draw(860, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
+                self.need_frames = 1
 
 
 class WALK:
@@ -146,7 +145,7 @@ class MARIO:
 
 
 
-    def update(self):
+    def update(self,x):
         self.cur_state.do(self)
         if self.event_que:
             event = self.event_que.pop()
@@ -184,4 +183,6 @@ class MARIO:
 next_state = {
     IDLE:  {RU: WALK,  LU: WALK,  RD: WALK,  LD: WALK,  SPACE: JUMP},
     RUN:   {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: JUMP},
+    WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: JUMP},
+    JUMP: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: JUMP}
 }

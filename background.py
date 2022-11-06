@@ -15,7 +15,7 @@ class BackGround:
         self.play_x = 0
         self.max_map = max_map_size // 1600 # for문안에 넣어서 총 몇개의 화면을 출력할지 출력
 
-    def update(self,x):
+    def update(self, x):
         if self.stage == 0:
             self.need_frame = 0
             self.frame = 0

@@ -7,7 +7,7 @@ from supermario import MARIO
 
 
 mario = None
-background = []
+background = None
 ball = None
 
 def handle_events():
@@ -18,17 +18,16 @@ def handle_events():
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.quit()
         else:
-            MARIO.handle_event(event)
+            mario.handle_event(event)
 
 
 # 초기화
 def enter():
-    global MARIO, BackGround
+    global mario, background
     mario = MARIO()
-
-    background.append(BackGround())
-    game_world.add_object(background,0)
-    game_world.add_object(mario,1)
+    background = BackGround()
+    game_world.add_object(background, 0)
+    game_world.add_object(mario, 1)
 
 
 # 종료
@@ -36,8 +35,9 @@ def exit():
     game_world.clear()
 
 def update():
+    x = mario.real_mario_x
     for game_object in game_world.all_objects():
-        game_object.update()
+        game_object.update(x)
 
 def draw_world():
     for game_object in game_world.all_objects():
