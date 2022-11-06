@@ -129,6 +129,9 @@ class SHOOT:
 class MARIO:
     def __init__(self):
         self.frame = 0
+        self.draw_mario_x = 100
+        self.real_mario_x = 100
+        self.real_mario_y = 40
         self.dir, self.face_dir = 0, 1
         self.right_image = load_image('mario_right.png')
         self.left_image = load_image('mario_left.png')
@@ -140,9 +143,8 @@ class MARIO:
         self.cur_state = IDLE
         self.cur_state.enter(self, None)
         self.small_mario = True
-        self.draw_mario_x = 100
-        self.real_mario_x = 100
-        self.real_mario_y = 40
+
+
 
     def update(self):
         self.cur_state.do(self)
