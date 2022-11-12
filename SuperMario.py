@@ -1,9 +1,11 @@
 from pico2d import *
+
+import game_framework
 from background import BackGround
 import game_world
 
 # 이벤트 정의
-RD, LD, UD, DD, SD,RU, LU, UU, DU, SU, SPACE, K1, K2 = range(13)
+RD, LD, UD, DD, SD,RU, LU, UU, DU, SU, SPACE, K1, K2= range(13)
 event_name = ['RD', 'LD', 'UD', 'DD', 'SD', 'RU', 'LU', 'UU', 'DU', 'SU', 'SPACE', 'K1', 'K2']
 
 key_event_table = {
@@ -19,23 +21,24 @@ key_event_table = {
     (SDL_KEYUP, SDLK_DOWN): DU, # 아래쪽 키 땠을 때
     (SDL_KEYUP, SDLK_LSHIFT): SU, # 왼쪽 쉬프트 키 땠을 때
     (SDL_KEYDOWN, SDLK_1) : K1,
-    (SDL_KEYDOWN, SDLK_2) : K2
+    (SDL_KEYDOWN, SDLK_2) : K2,
 }
 
 # 상태의 정의
 class IDLE:
     def enter(self, event):
+        global need_frame
         print('ENTER IDLE')
         if self.dir == 1:
             if self.small_mario:
-                self.need_frames = 5
+                need_frame = 5
             else:
-                self.need_frames = 4
+                need_frame = 4
         elif self.dir == -1:
             if self.small_mario:
-                self.need_frames = 5
+                need_frame = 5
             else:
-                self.need_frames = 4
+                need_frame = 4
         if event == K1:
             self.small_mario = True
         elif event == K2:
@@ -43,6 +46,7 @@ class IDLE:
         self.dir = 0
 
     def exit(self,event):
+        global need_frame, see
         print('EXIT IDLE')
         if event == SPACE:
             self.JUMPING = True
@@ -52,7 +56,9 @@ class IDLE:
             self.RUNNING = False
 
     def do(self):
+        global need_frame
         # print('DO IDLE')
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % need_frame
         if self.JUMPING:
             self.real_mario_y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity *0.15
@@ -69,6 +75,7 @@ class IDLE:
         pass
 
     def draw(self):
+        global need_frame
         # print('DRAW IDLE')
         if self.JUMPING:
             if self.face_dir == 1:
@@ -95,17 +102,18 @@ class IDLE:
         else:
             if self.face_dir == 1:
                 if self.small_mario:
-                    self.right_image.clip_draw(2, 512, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    self.right_image.clip_draw(10, 510, 50, 50, self.draw_mario_x, self.real_mario_y)
                 else:
-                    self.right_image.clip_draw(2, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    self.right_image.clip_draw(10, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
             else:
                 if self.small_mario:
-                    self.right_image.clip_composite_draw(2, 512, 50, 50, 0,'h',self.draw_mario_x, self.real_mario_y,50,50)
+                    self.right_image.clip_composite_draw(10, 510, 50, 50, 0,'h',self.draw_mario_x, self.real_mario_y,50,50)
                 else:
-                    self.right_image.clip_composite_draw(2, 306, 50, 70, 0, 'h', self.draw_mario_x, self.real_mario_y,50,70)
+                    self.right_image.clip_composite_draw(10, 306, 50, 70, 0, 'h', self.draw_mario_x, self.real_mario_y,50,70)
 
 class WALK:
     def enter(self, event):
+        global need_frame
         print('ENTER WALK')
         if event == SD:
             self.RUNNING = True
@@ -121,14 +129,14 @@ class WALK:
             self.dir += 1
         if self.dir == 1:
             if self.small_mario:
-                self.need_frames = 5
+                need_frame = 5
             else:
-                self.need_frames = 4
+                need_frame = 4
         elif self.dir == -1:
             if self.small_mario:
-                self.need_frames = 5
+                need_frame = 5
             else:
-                self.need_frames = 4
+                need_frame = 4
 
     def exit(self, event):
         print('EXIT WALK')
@@ -142,13 +150,13 @@ class WALK:
 
 
     def do(self):
+        global need_frame
         # print('DO WALK')
-        if self.a_count % 50 == 0:
-            self.frame = (self.frame + 1) % self.need_frame
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % need_frame
         if self.RUNNING:
-            self.real_mario_x += self.dir
+            self.real_mario_x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
         else:
-            self.real_mario_x += self.dir * 0.5
+            self.real_mario_x += self.dir * WALK_SPEED_PPS * game_framework.frame_time
         self.real_mario_x = clamp(30, self.real_mario_x, 3170)
         if self.real_mario_x < 800:
             self.draw_mario_x = self.real_mario_x
@@ -169,6 +177,7 @@ class WALK:
                 self.y_velocity = self.jump_height
 
     def draw(self):
+        global need_frame
         # print('DRAW WALK')
         if self.JUMPING:
             if self.dir == 1:
@@ -193,20 +202,42 @@ class WALK:
                 else:
                     self.left_image.clip_draw(285, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
         else:
-            if self.dir == 1:
-                if self.small_mario:  # frame = 1~2 번갈아 가면서 사용
-                    self .right_image.clip_draw(self.frame*70+2, 512, 50, 50, self.draw_mario_x, self.real_mario_y)
-                    # self.need_frames = 5
-                else:
-                    self.right_image.clip_draw(self.frame*70+2, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
-                    # self.need_frames = 4
-            elif self.dir == -1:
-                if self.small_mario:  # frame = 1~2 번갈아 가면서 사용
-                    self .right_image.clip_composite_draw(self.frame*70+2, 512, 50, 50, 0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
-                    # self.need_frames = 5
-                else:
-                    self.right_image.clip_composite_draw(self.frame*70+2, 306, 50, 70, 0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
-                    # self.need_frames = 4
+            if self.RUNNING:
+                if self.dir == 1:
+                    if self.small_mario:
+                        self.right_image.clip_draw(int(self.frame) * 70 + 352, 512, 50, 50, self.draw_mario_x, self.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
+                        self.need_frames = 2
+                    else:
+                        if int(self.frame) == 0:
+                            self.right_image.clip_draw(352, 306, 49, 70, self.draw_mario_x+2, self.real_mario_y)
+                        else:
+                            self.right_image.clip_draw(int(self.frame) * 70 + 352, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
+                        self.need_frames = 3
+                elif self.dir == -1:
+                    if self.small_mario:
+                        self.left_image.clip_draw(510 - int(self.frame) * 70, 512, 50, 50, self.draw_mario_x, self.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
+                        self.need_frames = 4
+                    else:
+                        if int(self.frame) == 0:
+                            self.left_image.clip_draw(505 - int(self.frame) * 70, 306, 52, 70, self.draw_mario_x + 2, self.real_mario_y)
+                        else:
+                            self.left_image.clip_draw(505 - int(self.frame) * 70, 306, 52, 70, self.draw_mario_x, self.real_mario_y)
+                        self.need_frames = 3
+            else:
+                if self.dir == 1:
+                    if self.small_mario:  # frame = 1~2 번갈아 가면서 사용
+                        self.right_image.clip_draw(int(self.frame)*70+2, 512, 50, 50, self.draw_mario_x, self.real_mario_y)
+                        # need_frame = 5
+                    else:
+                        self.right_image.clip_draw(int(self.frame)*70+2, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
+                        # need_frame = 4
+                elif self.dir == -1:
+                    if self.small_mario:  # frame = 1~2 번갈아 가면서 사용
+                        self .right_image.clip_composite_draw(int(self.frame)*70+2, 512, 50, 50, 0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
+                        # need_frame = 5
+                    else:
+                        self.right_image.clip_composite_draw(int(self.frame)*70+2, 306, 50, 70, 0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
+                        # need_frame = 4
 
 
 class SIT:
@@ -244,7 +275,7 @@ class MARIO:
         self.frame = 0
         self.draw_mario_x = 100
         self.real_mario_x = 100
-        self.real_mario_y = 40
+        self.real_mario_y = 60
         self.dir, self.face_dir = 0, 1
         self.right_image = load_image('mario_right.png')
         self.left_image = load_image('mario_left.png')
@@ -257,10 +288,10 @@ class MARIO:
         self.cur_state.enter(self, None)
         self.small_mario = True
         self.a_count = 0
-        self.need_frame = 5
         self.JUMPING = False
         self.FALLING = False
         self.RUNNING = False
+        self.see = False
 
 
 
@@ -280,6 +311,8 @@ class MARIO:
 
     def draw(self):
         self.cur_state.draw(self)
+        if self.see:
+            draw_rectangle(*self.get_rect())
         debug_print('PPPP')
         debug_print(f'Face Dir: {self.face_dir}, Dir: {self.dir}')
 
@@ -290,6 +323,18 @@ class MARIO:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
+
+    def get_bb(self):
+        if self.small_mario:
+            return self.real_mario_x - 15, self.real_mario_y - 25, self.real_mario_x+ 15, self.real_mario_y+ 25
+        else:
+            return self.real_mario_x - 10, self.real_mario_y - 20, self.real_mario_x+ 10, self.real_mario_y+ 20
+    def get_rect(self):
+        if self.small_mario:
+            return self.draw_mario_x - 15, self.real_mario_y - 25, self.draw_mario_x+ 15, self.real_mario_y+ 25
+        else:
+            return self.draw_mario_x - 10, self.real_mario_y - 20, self.draw_mario_x+ 10, self.real_mario_y+ 20
+
 
     # def fire_ball(self):
     #     print('FIRE BALL')
@@ -305,3 +350,22 @@ next_state = {
     IDLE:  {RU: WALK,  LU: WALK,  RD: WALK,  LD: WALK, SPACE: IDLE, SU: IDLE, SD: IDLE},
     WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: WALK, SU: WALK, SD: WALK}
 }
+
+FRAMES_PER_ACTION = 8
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0/TIME_PER_ACTION
+PIXEL_PER_METER = 10/0.3
+
+RUN_SPEED_KMPH = 40
+RUN_SPEED_MPM = RUN_SPEED_KMPH * 1000 / 60
+RUN_SPEED_MPS = RUN_SPEED_MPM / 60
+RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
+
+WALK_SPEED_KMPH = 20
+WALK_SPEED_MPM = WALK_SPEED_KMPH * 1000 / 60
+WALK_SPEED_MPS = WALK_SPEED_MPM / 60
+WALK_SPEED_PPS = WALK_SPEED_MPS * PIXEL_PER_METER
+
+need_frame = 5
+move_back_grounds = 0
+
