@@ -37,11 +37,13 @@ def exit():
 def update():
     x = mario.real_mario_x
     for game_object in game_world.all_objects():
-        game_object.update(x)
+        game_object.update()
+    update_background()
 
 def draw_world():
     for game_object in game_world.all_objects():
         game_object.draw()
+    print(mario.real_mario_x)
 
 
 def draw():
@@ -55,6 +57,11 @@ def pause():
 def resume():
     pass
 
+
+def update_background():
+    background.frame = (background.frame + 1) % background.need_frame
+    if mario.real_mario_x >= 800 and mario.real_mario_x <= 2400:
+        background.play_x = mario.real_mario_x
 
 
 
