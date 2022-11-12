@@ -43,7 +43,7 @@ def update():
 def draw_world():
     for game_object in game_world.all_objects():
         game_object.draw()
-    print(mario.real_mario_x)
+    # print(mario.real_mario_x)
 
 
 def draw():
