@@ -10,6 +10,14 @@ class Tiles:
     Grass_Right = None
     Pipe_Left_Top = None
     Pipe_Right_Top = None
+    Pipe_Left_middle = None
+    Pipe_Right_middle = None
+    coin_1 = None
+    coin_2 = None
+    coin_3 = None
+    coin_4 = None
+
+
     see = False
 
     def __init__(self):
@@ -22,6 +30,12 @@ class Tiles:
             Tiles.Grass_Right = load_image('grass_right.png')
             Tiles.Pipe_Left_Top = load_image('pipe_left_top.png')
             Tiles.Pipe_Right_Top = load_image('pipe_right_top.png')
+            Tiles.Pipe_Left_middle = load_image('pipe_left_middle.png')
+            Tiles.Pipe_Right_middle = load_image('pipe_right_middle.png')
+            Tiles.coin_1 = load_image('coin_1.png')
+            Tiles.coin_2 = load_image('coin_2.png')
+            Tiles.coin_3 = load_image('coin_3.png')
+            Tiles.coin_4 = load_image('coin_4.png')
 
     def update(self):
         pass
@@ -40,6 +54,18 @@ class Tiles:
             Tiles.Pipe_Left_Top.clip_composite_draw(0,0,16,16,0,'',self.x,self.y, 40,40)
         if self.tile == 5:
             Tiles.Pipe_Right_Top.clip_composite_draw(0,0,16,16,0,'',self.x,self.y, 40,40)
+        if self.tile == 6:
+            Tiles.Pipe_Left_middle.clip_composite_draw(0,0,15,16,0,'',self.x,self.y, 40,40)
+        if self.tile == 7:
+            Tiles.Pipe_Right_middle.clip_composite_draw(0,0,15,16,0,'',self.x, self.y, 40, 40)
+        if self.tile == 8:
+            Tiles.coin_1.clip_composite_draw(0,0,12,16,0,'',self.x, self.y, 20, 20)
+        if self.tile == 9:
+            Tiles.coin_2.clip_composite_draw(0,0,8,16,0,'',self.x, self.y, 20, 20)
+        if self.tile == 10:
+            Tiles.coin_3.clip_composite_draw(0,0,6, 16,0,'',self.x, self.y, 20, 20)
+        if self.tile == 11:
+            Tiles.coin_3.clip_composite_draw(0,0,8,16,0,'',self.x, self.y, 20, 20)
 
 
         if self.see and self.tile > 0:
