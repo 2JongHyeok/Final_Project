@@ -11,6 +11,10 @@ mario = None
 background = None
 ball = None
 tiles = []
+flag = None
+mp = 0
+mn = 0
+mm = 0
 map_1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -80,7 +84,7 @@ def handle_events():
 
 # 초기화
 def enter():
-    global mario, background
+    global mario, background, flag
     mario = MARIO()
     background = BackGround()
     game_world.add_object(background, 0)
@@ -94,7 +98,7 @@ def enter():
             tiles[(9-i) * 80 + j].y = (9-i) * 40 + 20
             tiles[i * 80 + j].tile = map_1[(9-i) * 80 + j]
             game_world.add_object(tiles[i * 80 + j],0)
-
+    flag = True
 # 종료
 def exit():
     game_world.clear()
@@ -123,10 +127,22 @@ def resume():
 
 
 def update_background_And_Tiles():
-    global flag
+    global flag, mp, mn, mm
+    if flag:
+        mp = mario.real_mario_x
+        mn = mario.real_mario_x
+        flag = False
+    mp = mn
+    mn = mario.real_mario_x
+    mm = mp - mn
     background.frame = (background.frame + 1) % background.need_frame
     if mario.real_mario_x >= 800 and mario.real_mario_x <= 2400:
         background.play_x = mario.real_mario_x
+        if(mario.dir != 0):
+            for i in range(10):
+                for j in range(80):
+                    print(tiles[i * 9 + j].x)
+                    tiles[i * 80 + j].x += mm;
 
 
 
