@@ -21,7 +21,7 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 10
 
-animation_name = ['Idle','Walk']
+animation_name = ['Idle', 'Walk']
 
 class Goomba:
     image = None
@@ -31,24 +31,25 @@ class Goomba:
         if self.image == None:
             Goomba.image = {}
             for name in animation_name:
-                Goomba.image[name] = [load_image("./goombafiles/"+ name + " (%d)" % i + ".png") for i in range(1,2)]
-
+                Goomba.image[name] = [load_image("./goombafiles/"+ name + " (%d)" % i + ".png") for i in range(1,3)]
 
     def prepare_patrol_points(self):
-        pass
-
+        positions = [(80,970)]  # 좌표 획득시, 기본 위치가 왼쪽 위
+        self.patrol_points = []
+        for p in positions:
+            self.patrol_points.append((p[0], 1024 - p[1]))  # pico2d 상의 좌표계를 이용하도록 변경.
     def __init__(self):
         self.prepare_patrol_points()
         self.patrol_order = 1
         self.x, self.y = self.patrol_points[0]
         self.load_images()
-        self.dir = random.random() * 2 * math.pi  # random moving direction
+        self.dir = random.randint(-1, 2)  # random moving direction
         self.speed = 0
         self.timer = 1.0  # change direction every 1 sec when wandering
         self.wait_timer = 2.0
         self.frame = 0
         self.build_behavior_tree()
-        self.HP
+        self.HP = 100
 
 
     def wander(self):
@@ -56,7 +57,7 @@ class Goomba:
         self.timer -= game_framework.frame_time
         if self.timer <= 0:
             self.timer = 10.0
-            self.dir = random.random() * 2 * math.pi # 방향을 라디안 값으로 설정
+            self.dir = random.randint(-2, 2) # 방향을 라디안 값으로 설정
             print('Wander Success')
             return BehaviorTree.SUCCESS
         return BehaviorTree.SUCCESS
@@ -77,15 +78,15 @@ class Goomba:
 
     def update(self):
         self.bt.run()
-
+        print(self.dir)
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
-        self.x += self.speed * math.cos(self.dir) * game_framework.frame_time
+        self.x += self.speed * self.dir * game_framework.frame_time
         self.x = clamp(50, self.x, 3600 - 50)
         self.y = clamp(50, self.y, 800 - 50)
 
 
     def draw(self):
-        if math.cos(self.dir) < 0:
+        if math.cos(self.dir) > 0:
             if self.speed == 0:
                 Goomba.image['Walk'][1].composite_draw(0, 'h', self.x, self.y, 40,40)
             else:
@@ -103,7 +104,7 @@ class Goomba:
         pass
 
 
-FRAMES_PER_ACTION = 8
+FRAMES_PER_ACTION = 2
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0/TIME_PER_ACTION
 PIXEL_PER_METER = 10/0.3
