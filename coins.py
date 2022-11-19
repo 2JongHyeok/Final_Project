@@ -1,4 +1,6 @@
 from pico2d import *
+import game_world
+
 max_map_size = 3200
 
 
@@ -77,6 +79,7 @@ class Tiles:
         if self.tile == 11:
             Tiles.coin_4.clip_composite_draw(0,0,8,16,0,'',self.x, self.y, 20, 20)
 
+
         if self.see and self.tile > 0:
             draw_rectangle(*self.get_bb())
 
@@ -84,5 +87,7 @@ class Tiles:
         return self.x - 20, self.y - 20, self.x + 20, self.y + 20
 
     def handle_collision(self, other, group):
-        pass
+        print('ball disappear')
+        if group == 'boy:ball':
+            game_world.remove_object(self)
 

@@ -334,7 +334,8 @@ class MARIO:
             return self.draw_mario_x - 15, self.real_mario_y - 25, self.draw_mario_x+ 15, self.real_mario_y+ 25
         else:
             return self.draw_mario_x - 10, self.real_mario_y - 20, self.draw_mario_x+ 10, self.real_mario_y+ 20
-
+    def handle_collision(self, other, group):
+        pass
 
     # def fire_ball(self):
     #     print('FIRE BALL')
