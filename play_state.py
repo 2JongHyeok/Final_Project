@@ -96,9 +96,11 @@ def enter():
             tiles.append(Tiles())
     for i in range(10):
         for j in range(80):
-            tiles[(9-i) * 80 + j].x = j * 40 + 20
+            tiles[(9-i) * 80 + j].fixed_x = j * 40 + 20
+            tiles[(9-i) * 80 + j].x =tiles[(9-i) * 80 + j].fixed_x - mario.real_mario_x + 100
             tiles[(9-i) * 80 + j].y = (9-i) * 40 + 20
             tiles[i * 80 + j].tile = map_1[(9-i) * 80 + j]
+
             game_world.add_object(tiles[i * 80 + j],0)
     server.goomba = Goomba()
     game_world.add_object(server.goomba, 1)
@@ -156,7 +158,8 @@ def update_background_And_Tiles():
             for i in range(10):
                 for j in range(80):
                     # print(tiles[i * 9 + j].x)
-                    tiles[i * 80 + j].x += mm
+                    # tiles[i * 80 + j].x += mm
+                    tiles[i * 80 + j].x = tiles[(9-i) * 80 + j].fixed_x - mario.real_mario_x 
 
 
 

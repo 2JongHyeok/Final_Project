@@ -22,6 +22,7 @@ class Tiles:
     def __init__(self):
         self.tile = 0 # 0 : 왼쪽풀, 1: 가운데풀, 2: 오른쪽풀
         self.x = 0
+        self.fixed_x = 0
         self.y = 0
         self.timer = 100
         if self.Grass_Left == None:
