@@ -7,7 +7,7 @@ import game_world
 # 이벤트 정의
 RD, LD, UD, DD, SD,RU, LU, UU, DU, SU, SPACE, K1, K2= range(13)
 event_name = ['RD', 'LD', 'UD', 'DD', 'SD', 'RU', 'LU', 'UU', 'DU', 'SU', 'SPACE', 'K1', 'K2']
-animation_names = []
+animation_names = ['Idle', 'Walk', 'Run', 'Die', 'Sit']
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RD, # 오른쪽 키 눌렸을 때
