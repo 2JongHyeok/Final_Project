@@ -209,7 +209,7 @@ class WALK:
                         self.need_frames = 2
                     else:
                         if int(self.frame) == 0:
-                            self.right_image.clip_draw(352, 306, 49, 70, self.draw_mario_x+2, self.real_mario_y)
+                            self.right_image.clip_draw(352, 306, 49, 70, self.draw_mario_x, self.real_mario_y)
                         else:
                             self.right_image.clip_draw(int(self.frame) * 70 + 352, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
                         self.need_frames = 3
@@ -326,12 +326,12 @@ class MARIO:
 
     def get_bb(self):
         if self.small_mario:
-            return self.real_mario_x - 15, self.real_mario_y - 25, self.real_mario_x+ 15, self.real_mario_y+ 25
+            return self.draw_mario_x - 15, self.real_mario_y - 25, self.draw_mario_x+ 15, self.real_mario_y+ 20
         else:
-            return self.real_mario_x - 10, self.real_mario_y - 20, self.real_mario_x+ 10, self.real_mario_y+ 20
+            return self.draw_mario_x - 10, self.real_mario_y - 20, self.draw_mario_x+ 10, self.real_mario_y+ 20
     def get_rect(self):
         if self.small_mario:
-            return self.draw_mario_x - 15, self.real_mario_y - 25, self.draw_mario_x+ 15, self.real_mario_y+ 25
+            return self.draw_mario_x - 15, self.real_mario_y - 25, self.draw_mario_x+ 15, self.real_mario_y+ 20
         else:
             return self.draw_mario_x - 10, self.real_mario_y - 20, self.draw_mario_x+ 10, self.real_mario_y+ 20
     def handle_collision(self, other, group):

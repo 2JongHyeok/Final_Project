@@ -157,9 +157,7 @@ def update_background_And_Tiles():
         if(mario.dir != 0):
             for i in range(10):
                 for j in range(80):
-                    # print(tiles[i * 9 + j].x)
-                    # tiles[i * 80 + j].x += mm
-                    tiles[i * 80 + j].x = tiles[(9-i) * 80 + j].fixed_x - mario.real_mario_x 
+                    tiles[i * 80 + j].x = tiles[i * 80 + j].fixed_x - mario.real_mario_x + 800
 
 
 
