@@ -84,7 +84,8 @@ class Tiles:
             draw_rectangle(*self.get_bb())
 
     def get_bb(self):
-        return self.x - 20, self.y - 20, self.x + 20, self.y + 20
+        if self.x >= -50 and self.x <= 1650:
+            return self.x - 20, self.y - 20, self.x + 20, self.y + 20
 
     def handle_collision(self, other, group):
         print('ball disappear')

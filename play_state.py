@@ -97,7 +97,7 @@ def enter():
     for i in range(10):
         for j in range(80):
             tiles[(9-i) * 80 + j].fixed_x = j * 40 + 20
-            tiles[(9-i) * 80 + j].x =tiles[(9-i) * 80 + j].fixed_x - mario.real_mario_x + 100
+            tiles[(9-i) * 80 + j].x = tiles[(9-i) * 80 + j].fixed_x - mario.real_mario_x + 100
             tiles[(9-i) * 80 + j].y = (9-i) * 40 + 20
             tiles[i * 80 + j].tile = map_1[(9-i) * 80 + j]
 
@@ -119,10 +119,11 @@ def update():
             if collide(mario, coin):
                 coin.tile = 0
     for a, b, group in game_world.all_collision_pairs():
-        if collide(a, b):
-            # print('COLLISION by ',group)
-            a.handle_collision(b,group)
-            b.handle_collision(a,group)
+        if b.x >= 0 and b.x <= 1600:
+            if collide(a, b):
+                # print('COLLISION by ',group)
+                a.handle_collision(b,group)
+                b.handle_collision(a,group)
 
 def draw_world():
     for game_object in game_world.all_objects():
