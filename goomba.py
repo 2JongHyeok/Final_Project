@@ -78,7 +78,7 @@ class Goomba:
 
     def update(self):
         self.bt.run()
-        print(self.dir)
+        # print(self.dir)
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
         self.x += self.speed * self.dir * game_framework.frame_time
         self.x = clamp(50, self.x, 3600 - 50)

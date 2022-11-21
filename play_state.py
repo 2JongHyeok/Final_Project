@@ -116,8 +116,9 @@ def update():
     update_background_And_Tiles()
     for coin in tiles.copy():
         if coin.tile > 8:
-            if collide(mario, coin):
-                coin.tile = 0
+            if coin.x >= 0 and coin.x <= 1600:
+                if collide(mario, coin):
+                    coin.tile = 0
     for a, b, group in game_world.all_collision_pairs():
         if b.x >= 0 and b.x <= 1600:
             if collide(a, b):

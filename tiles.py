@@ -79,7 +79,8 @@ class Tiles:
             Tiles.coin_4.clip_composite_draw(0,0,8,16,0,'',self.x, self.y, 20, 20)
 
         if self.see and self.tile > 0:
-            draw_rectangle(*self.get_bb())
+            if self.x >= - 50 and self.x <= 1650:
+                draw_rectangle(*self.get_bb())
 
     def get_bb(self):
         if(self.x >= - 50  and self.x <= 1650):
