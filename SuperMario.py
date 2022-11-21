@@ -1,13 +1,13 @@
 from pico2d import *
-
 import game_framework
+import random
 from background import BackGround
 import game_world
 
 # 이벤트 정의
-RD, LD, UD, DD, SD,RU, LU, UU, DU, SU, SPACE, K1, K2= range(13)
+RD, LD, UD, DD, SD, RU, LU, UU, DU, SU, SPACE, K1, K2 = range(13)
 event_name = ['RD', 'LD', 'UD', 'DD', 'SD', 'RU', 'LU', 'UU', 'DU', 'SU', 'SPACE', 'K1', 'K2']
-animation_names = ['Idle', 'Walk', 'Run', 'Die', 'Sit']
+animation_names = ['Idle', 'Walk', 'Run', 'Die', 'Sit', 'Jump', 'Fall']
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RD, # 오른쪽 키 눌렸을 때
@@ -81,36 +81,48 @@ class IDLE:
         if self.JUMPING:
             if self.face_dir == 1:
                 if self.small_mario:
-                    self.right_image.clip_draw(355, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Jump'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 50)
+                    # self.right_image.clip_draw(355, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
                 else:
-                    self.right_image.clip_draw(355, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    # self.right_image.clip_draw(355, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Jump'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 70)
             elif self.face_dir == -1:
                 if self.small_mario:
-                     self.left_image.clip_draw(435, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Jump'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
+                    # self.left_image.clip_draw(435, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
                 else:
-                    self.left_image.clip_draw(425, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    # self.left_image.clip_draw(425, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Jump'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
         elif self.FALLING:
             if self.face_dir == 1:
                 if self.small_mario:
-                    self.right_image.clip_draw(495, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Fall'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 50)
+                    # self.right_image.clip_draw(495, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
                 else:
-                    self.right_image.clip_draw(494, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    # self.right_image.clip_draw(494, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Fall'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 70)
             elif self.face_dir == -1:
                 if self.small_mario:
-                    self.left_image.clip_draw(300, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Fall'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
+                    # self.left_image.clip_draw(300, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
                 else:
-                    self.left_image.clip_draw(285, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Fall'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
+                    # self.left_image.clip_draw(285, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
         else:
             if self.face_dir == 1:
                 if self.small_mario:
-                    self.right_image.clip_draw(10, 510, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Idle'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 50)
+                    # self.right_image.clip_draw(10, 510, 50, 50, self.draw_mario_x, self.real_mario_y)
                 else:
-                    self.right_image.clip_draw(10, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Idle'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 70)
+                    # self.right_image.clip_draw(10, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
             else:
                 if self.small_mario:
-                    self.right_image.clip_composite_draw(10, 510, 50, 50, 0,'h',self.draw_mario_x, self.real_mario_y,50,50)
+                    MARIO.small_image['Idle'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
+                    # self.right_image.clip_composite_draw(10, 510, 50, 50, 0,'h',self.draw_mario_x, self.real_mario_y,50,50)
                 else:
-                    self.right_image.clip_composite_draw(10, 306, 50, 70, 0, 'h', self.draw_mario_x, self.real_mario_y,50,70)
+                    MARIO.big_image['Idle'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
+                    # self.right_image.clip_composite_draw(10, 306, 50, 70, 0, 'h', self.draw_mario_x, self.real_mario_y,50,70)
 
 class WALK:
     def enter(self, event):
@@ -183,62 +195,78 @@ class WALK:
         if self.JUMPING:
             if self.dir == 1:
                 if self.small_mario:
-                    self.right_image.clip_draw(355, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    # self.right_image.clip_draw(355, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Jump'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 50)
                 else:
-                    self.right_image.clip_draw(355, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    # self.right_image.clip_draw(355, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Jump'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 70)
             elif self.dir == -1:
                 if self.small_mario:
-                     self.left_image.clip_draw(435, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    # self.left_image.clip_draw(435, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Jump'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
                 else:
-                    self.left_image.clip_draw(425, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    # self.left_image.clip_draw(425, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Jump'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
         elif self.FALLING:
             if self.dir == 1:
                 if self.small_mario:
-                    self.right_image.clip_draw(495, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    # self.right_image.clip_draw(495, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Fall'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 50)
                 else:
-                    self.right_image.clip_draw(494, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    # self.right_image.clip_draw(494, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Fall'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 70)
             elif self.dir == -1:
                 if self.small_mario:
-                    self.left_image.clip_draw(300, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    # self.left_image.clip_draw(300, 457, 50, 50, self.draw_mario_x, self.real_mario_y)
+                    MARIO.small_image['Fall'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
                 else:
-                    self.left_image.clip_draw(285, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    # self.left_image.clip_draw(285, 206, 50, 70, self.draw_mario_x, self.real_mario_y)
+                    MARIO.big_image['Fall'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
         else:
             if self.RUNNING:
                 if self.dir == 1:
                     if self.small_mario:
-                        self.right_image.clip_draw(int(self.frame) * 70 + 352, 512, 50, 50, self.draw_mario_x, self.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
-                        self.need_frames = 2
+                        # self.right_image.clip_draw(int(self.frame) * 70 + 352, 512, 50, 50, self.draw_mario_x, self.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
+                        MARIO.small_image['Run'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 50)
                     else:
-                        if int(self.frame) == 0:
-                            self.right_image.clip_draw(352, 306, 49, 70, self.draw_mario_x, self.real_mario_y)
-                        else:
-                            self.right_image.clip_draw(int(self.frame) * 70 + 352, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
-                        self.need_frames = 3
+                        MARIO.big_image['Run'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 70)
+                        # if int(self.frame) == 0:
+                            # self.right_image.clip_draw(352, 306, 49, 70, self.draw_mario_x, self.real_mario_y)
+                        # else:
+                        #     self.right_image.clip_draw(int(self.frame) * 70 + 352, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
+                        # self.need_frames = 3
                 elif self.dir == -1:
                     if self.small_mario:
-                        self.left_image.clip_draw(510 - int(self.frame) * 70, 512, 50, 50, self.draw_mario_x, self.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
-                        self.need_frames = 4
+                        # self.left_image.clip_draw(510 - int(self.frame) * 70, 512, 50, 50, self.draw_mario_x, self.real_mario_y)  # frame = 1~2 번갈아 가면서 사용
+                        # self.need_frames = 4
+                        MARIO.small_image['Run'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
                     else:
-                        if int(self.frame) == 0:
-                            self.left_image.clip_draw(505 - int(self.frame) * 70, 306, 52, 70, self.draw_mario_x + 2, self.real_mario_y)
-                        else:
-                            self.left_image.clip_draw(505 - int(self.frame) * 70, 306, 52, 70, self.draw_mario_x, self.real_mario_y)
-                        self.need_frames = 3
+                        MARIO.big_image['Run'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
+                        # if int(self.frame) == 0:
+                        #     self.left_image.clip_draw(505 - int(self.frame) * 70, 306, 52, 70, self.draw_mario_x + 2, self.real_mario_y)
+                        # else:
+                        #     self.left_image.clip_draw(505 - int(self.frame) * 70, 306, 52, 70, self.draw_mario_x, self.real_mario_y)
+                        # self.need_frames = 3
             else:
                 if self.dir == 1:
                     if self.small_mario:  # frame = 1~2 번갈아 가면서 사용
-                        self.right_image.clip_draw(int(self.frame)*70+2, 512, 50, 50, self.draw_mario_x, self.real_mario_y)
+                        # self.right_image.clip_draw(int(self.frame)*70+2, 512, 50, 50, self.draw_mario_x, self.real_mario_y)
                         # need_frame = 5
+                        MARIO.small_image['Walk'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 50)
                     else:
-                        self.right_image.clip_draw(int(self.frame)*70+2, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
+                        MARIO.big_image['Walk'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, 50, 70)
+                        # self.right_image.clip_draw(int(self.frame)*70+2, 306, 50, 70, self.draw_mario_x, self.real_mario_y)
                         # need_frame = 4
                 elif self.dir == -1:
                     if self.small_mario:  # frame = 1~2 번갈아 가면서 사용
-                        self .right_image.clip_composite_draw(int(self.frame)*70+2, 512, 50, 50, 0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
+                        # self .right_image.clip_composite_draw(int(self.frame)*70+2, 512, 50, 50, 0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
                         # need_frame = 5
+                        MARIO.small_image['Walk'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 50)
                     else:
-                        self.right_image.clip_composite_draw(int(self.frame)*70+2, 306, 50, 70, 0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
+                        # self.right_image.clip_composite_draw(int(self.frame)*70+2, 306, 50, 70, 0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
                         # need_frame = 4
+                        MARIO.big_image['Walk'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, 50, 70)
+
 
 
 class SIT:
@@ -272,8 +300,20 @@ class SHOOT:
 
 
 class MARIO:
+    small_image = None
+    big_image = None
+
+    def load_images(self):
+        if MARIO.small_image == None:
+            MARIO.small_image = {}
+            MARIO.big_image = {}
+            for name in animation_names:
+                MARIO.small_image[name] = [load_image("./mariofiles/smallmario/" + name + " (%d)" % i + ".png") for i in range(1, 5)]
+                MARIO.big_image[name] = [load_image("./mariofiles/bigmario/" + name + " (%d)" % i + ".png") for i in range(1, 5)]
+
     def __init__(self):
         self.frame = 0
+        self.load_images()
         self.draw_mario_x = 100
         self.real_mario_x = 100
         self.real_mario_y = 60
@@ -308,6 +348,7 @@ class MARIO:
                 print('ERROR', {self.cur_state.__name__}, '  ', event_name[event])
             self.cur_state.enter(self, event)
         self.a_count += 1
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
 
 
     def draw(self):
@@ -353,7 +394,7 @@ next_state = {
     WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: WALK, SU: WALK, SD: WALK}
 }
 
-FRAMES_PER_ACTION = 8
+FRAMES_PER_ACTION = 4
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0/TIME_PER_ACTION
 PIXEL_PER_METER = 10/0.3
