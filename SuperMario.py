@@ -294,6 +294,7 @@ class MARIO:
         self.FALLING = False
         self.RUNNING = False
         self.see = False
+        self.sky = True
 
 
 
