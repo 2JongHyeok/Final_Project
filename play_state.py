@@ -14,6 +14,10 @@ background = None
 ball = None
 tiles = []
 flag = None
+
+on_block = False
+
+
 mp = 0
 mn = 0
 mm = 0
@@ -121,10 +125,10 @@ def update():
                     coin.tile = 0
     for a, b, group in game_world.all_collision_pairs():
         if b.x >= 0 and b.x <= 1600:
-            if collide(a, b):
-                # print('COLLISION by ',group)
-                a.handle_collision(b,group)
-                b.handle_collision(a,group)
+            if tile_collide(a, b):
+                if b.tile > 0 and b.tile < 8:
+                    a.handle_collision(b,group)
+                    b.handle_collision(a,group)
 
 def draw_world():
     for game_object in game_world.all_objects():
@@ -166,6 +170,22 @@ def update_background_And_Tiles():
 def collide(a,b):
     la, ba, ra, ta = a.get_bb()
     lb, bb, rb, tb = b.get_bb()
+    if la > rb: return False
+    if ra < lb: return False
+    if ta < bb: return False
+    if ba > tb:
+        return False
+    return True
+
+def tile_collide(a,b):
+    global on_block
+    if b.tile == 0:
+        return False
+    la, ba, ra, ta = a.get_bb()
+    lb, bb, rb, tb = b.get_bb()
+    if ba == tb:
+        on_block = True
+        return True
     if la > rb: return False
     if ra < lb: return False
     if ta < bb: return False
