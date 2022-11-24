@@ -164,7 +164,7 @@ class WALK:
             self.real_mario_y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity *0.15
             if self.y_velocity <= 0:
-                self.floor = True
+                self.floor = False
                 self.JUMPING = False
                 self.Falling = True
         # if self.FALLING:

@@ -120,13 +120,13 @@ def update():
     update_background_And_Tiles()
     for coin in tiles.copy():
         if coin.tile > 8:
-            if coin.x >= 0 and coin.x <= 1600:
+            if 0 <= coin.x <= 1600:
                 if collide(mario, coin):
                     coin.tile = 0
     for a, b, group in game_world.all_collision_pairs():
-        if b.x >= 0 and b.x <= 1600:
+        if 0 <= b.x <= 1600:
             if tile_collide(a, b):
-                if b.tile > 0 and b.tile < 8:
+                if 0 < b.tile < 8:
                     a.handle_collision(b,group)
                     b.handle_collision(a,group)
 
@@ -158,7 +158,7 @@ def update_background_And_Tiles():
     mn = mario.real_mario_x
     mm = mp - mn
     background.frame = (background.frame + 1) % background.need_frame
-    if mario.real_mario_x >= 800 and mario.real_mario_x <= 2400:
+    if 800 <= mario.real_mario_x <= 2400:
         background.play_x = mario.real_mario_x
         if(mario.dir != 0):
             for i in range(10):
