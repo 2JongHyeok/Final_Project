@@ -167,13 +167,6 @@ class WALK:
                 self.floor = False
                 self.JUMPING = False
                 self.Falling = True
-        # if self.FALLING:
-        #     self.real_mario_y += self.y_velocity * 0.2
-        #     self.y_velocity -= self.y_gravity * 0.15
-        #     if self.y_velocity < - self.jump_height:
-        #         self.real_mario_y = self.pre_y
-        #         self.FALLING = False
-        #         self.y_velocity = self.jump_height
 
     def draw(self):
         global need_frame
@@ -306,14 +299,17 @@ class MARIO:
             self.cur_state.enter(self, event)
         self.a_count += 1
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
+        if self.floor:
+            self.y_velocity = self.jump_height
+            self.FALLING = False
 
         if self.FALLING:
-            self.y_velocity = 0
+            self.y_velocity = -self.y_gravity * 0.15
             self.y_velocity -= self.y_gravity * 0.15
             self.real_mario_y += self.y_velocity * 2
-            if self.floor:
-                self.y_velocity = self.jump_height
-                self.FALLING = False
+
+
+
 
 
 

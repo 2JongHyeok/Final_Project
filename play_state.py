@@ -118,6 +118,7 @@ def update():
     for game_object in game_world.all_objects():
         game_object.update()
     update_background_And_Tiles()
+    mario.floor = False
     for coin in tiles.copy():
         if coin.tile > 8:
             if 0 <= coin.x <= 1600:
@@ -127,8 +128,8 @@ def update():
         if 0 <= b.x <= 1600:
             if tile_collide(a, b):
                 if 0 < b.tile < 8:
-                    a.handle_collision(b,group)
-                    b.handle_collision(a,group)
+                    a.handle_collision(a, group)
+                    b.handle_collision(b, group)
 
 def draw_world():
     for game_object in game_world.all_objects():
