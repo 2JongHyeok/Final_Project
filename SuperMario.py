@@ -54,6 +54,7 @@ class IDLE:
         global need_frame, see
         # print('EXIT IDLE')
         if event == SPACE:
+            self.y_velocity = self.jump_height
             self.JUMPING = True
         if event == SD:
             self.RUNNING = True
@@ -68,9 +69,15 @@ class IDLE:
             self.real_mario_y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity *0.15
             if self.y_velocity <= 0:
-                self.FALLING = True
                 self.JUMPING = False
-                self.floor = False
+        else:
+            self.y_velocity = 0
+            self.y_velocity -= self.y_gravity * 1
+            self.real_mario_y += self.y_velocity * 2
+            if self.y_velocity < -self.y_gravity * 0.15:
+                self.FALLING = True
+            else:
+                self.FALLING = False
 
 
     def draw(self):
@@ -140,6 +147,7 @@ class WALK:
         print('EXIT WALK')
         self.face_dir = self.dir
         if event == SPACE:
+            self.y_velocity = self.jump_height
             self.JUMPING = True
         if event == SD:
             self.RUNNING = True
@@ -164,9 +172,15 @@ class WALK:
             self.real_mario_y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity *0.15
             if self.y_velocity <= 0:
-                self.floor = False
                 self.JUMPING = False
-                self.Falling = True
+        else:
+            self.y_velocity = 0
+            self.y_velocity -= self.y_gravity * 1
+            self.real_mario_y += self.y_velocity * 2
+            if self.y_velocity < -self.y_gravity * 0.15:
+                self.FALLING = True
+            else:
+                self.FALLING = False
 
     def draw(self):
         global need_frame
@@ -265,7 +279,7 @@ class MARIO:
         self.load_images()
         self.draw_mario_x = 100
         self.real_mario_x = 100
-        self.real_mario_y = 60
+        self.real_mario_y = 500
         self.dir, self.face_dir = 0, 1
         self.right_image = load_image('mario_right.png')
         self.left_image = load_image('mario_left.png')
@@ -281,8 +295,9 @@ class MARIO:
         self.JUMPING = False
         self.RUNNING = False
         self.see = False
-        self.FALLING = True
+        self.FALLING = False
         self.floor = False
+        self.side_block = False
 
 
 
@@ -299,14 +314,7 @@ class MARIO:
             self.cur_state.enter(self, event)
         self.a_count += 1
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
-        if self.floor:
-            self.y_velocity = self.jump_height
-            self.FALLING = False
 
-        if self.FALLING:
-            self.y_velocity = -self.y_gravity * 0.15
-            self.y_velocity -= self.y_gravity * 0.15
-            self.real_mario_y += self.y_velocity * 2
 
 
 
@@ -340,7 +348,12 @@ class MARIO:
         else:
             return self.draw_mario_x - 15, self.real_mario_y - 25, self.draw_mario_x+ 15, self.real_mario_y+ 25
     def handle_collision(self, other, group):
-        self.floor = True
+            if not self.JUMPING:
+                self.y_velocity = 0
+                self.real_mario_y = other.y + 41
+                if self.side_block:
+                    self.dir = - self.dir
+            self.FALLING = False
 
 
     # def fire_ball(self):

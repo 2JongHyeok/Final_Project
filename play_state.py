@@ -16,6 +16,7 @@ tiles = []
 flag = None
 
 on_block = False
+mario_side_block = False
 
 
 mp = 0
@@ -128,7 +129,7 @@ def update():
         if 0 <= b.x <= 1600:
             if tile_collide(a, b):
                 if 0 < b.tile < 8:
-                    a.handle_collision(a, group)
+                    a.handle_collision(b, group)
                     b.handle_collision(b, group)
 
 def draw_world():
@@ -179,7 +180,7 @@ def collide(a,b):
     return True
 
 def tile_collide(a,b):
-    global on_block
+    global on_block, mario
     if b.tile == 0:
         return False
     la, ba, ra, ta = a.get_bb()
@@ -187,9 +188,15 @@ def tile_collide(a,b):
 
     if la > rb: return False
     if ra < lb: return False
-    if ba == tb:
-        on_block = True
-        return True
+    if not ra < lb and la > rb:
+        if ba == tb:
+            on_block = True
+            return True
+        else:
+            mario.side_block = True
+            return True
+
+
     if ta < bb: return False
     if ba > tb: return False
     return True
