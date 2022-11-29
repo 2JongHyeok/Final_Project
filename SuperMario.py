@@ -5,8 +5,8 @@ from background import BackGround
 import game_world
 
 # 이벤트 정의
-RD, LD, UD, DD, SD, RU, LU, UU, DU, SU, SPACE, K1, K2 = range(13)
-event_name = ['RD', 'LD', 'UD', 'DD', 'SD', 'RU', 'LU', 'UU', 'DU', 'SU', 'SPACE', 'K1', 'K2']
+RD, LD, UD, DD, SD, RU, LU, UU, DU, SU, SPACE, K1, K2, SUICIDE = range(14)
+event_name = ['RD', 'LD', 'UD', 'DD', 'SD', 'RU', 'LU', 'UU', 'DU', 'SU', 'SPACE', 'K1', 'K2', 'SUICIDE']
 animation_names = ['Idle', 'Walk', 'Run', 'Die', 'Sit', 'Jump', 'Fall']
 sm_w = 30 # 작은 마리오 가로
 sm_h = 40 # 작은 마리오 세로
@@ -53,13 +53,18 @@ class IDLE:
     def exit(self,event):
         global need_frame, see
         # print('EXIT IDLE')
-        if event == SPACE:
-            self.y_velocity = self.jump_height
-            self.JUMPING = True
+        if self.floor:
+            if event == SPACE:
+                self.y_velocity = self.jump_height
+                self.JUMPING = True
+                self.floor = False
         if event == SD:
             self.RUNNING = True
         if event == SU:
             self.RUNNING = False
+        if self.on_pipe:
+            if event == DD or event == DU:
+                self.shopping = True
 
     def do(self):
         global need_frame
@@ -78,6 +83,8 @@ class IDLE:
                 self.FALLING = True
             else:
                 self.FALLING = False
+        if self.real_mario_y < 0:
+            self.add_event(SUICIDE)
 
 
     def draw(self):
@@ -94,7 +101,7 @@ class IDLE:
                 else:
                     MARIO.big_image['Jump'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, bm_w, bm_h)
         elif self.FALLING:
-            if self.face_dir == 1:
+            if self.face_dir ==1:
                 if self.small_mario:
                     MARIO.small_image['Fall'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
                 else:
@@ -146,13 +153,17 @@ class WALK:
     def exit(self, event):
         print('EXIT WALK')
         self.face_dir = self.dir
-        if event == SPACE:
-            self.y_velocity = self.jump_height
-            self.JUMPING = True
+        if self.floor:
+            if event == SPACE:
+                self.y_velocity = self.jump_height
+                self.JUMPING = True
+                self.floor = False
         if event == SD:
             self.RUNNING = True
         if event == SU:
             self.RUNNING = False
+        if self.real_mario_y < 0:
+            self.suicide = True
 
 
     def do(self):
@@ -181,11 +192,13 @@ class WALK:
                 self.FALLING = True
             else:
                 self.FALLING = False
+        if self.real_mario_y < 0:
+            self.add_event(SUICIDE)
 
     def draw(self):
         global need_frame
         if self.JUMPING:
-            if self.dir == 1:
+            if self.dir >= 0:
                 if self.small_mario:
                     MARIO.small_image['Jump'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
                 else:
@@ -196,7 +209,7 @@ class WALK:
                 else:
                     MARIO.big_image['Jump'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, bm_w, bm_h)
         elif self.FALLING:
-            if self.dir == 1:
+            if self.dir >= 0:
                 if self.small_mario:
                     MARIO.small_image['Fall'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
                 else:
@@ -208,7 +221,7 @@ class WALK:
                     MARIO.big_image['Fall'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, bm_w, bm_h)
         else:
             if self.RUNNING:
-                if self.dir == 1:
+                if self.dir >= 0:
                     if self.small_mario:
                         MARIO.small_image['Run'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
                     else:
@@ -219,7 +232,7 @@ class WALK:
                     else:
                         MARIO.big_image['Run'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, bm_w, bm_h)
             else:
-                if self.dir == 1:
+                if self.dir >= 0:
                     if self.small_mario:  # frame = 1~2 번갈아 가면서 사용
                         MARIO.small_image['Walk'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
                     else:
@@ -230,36 +243,27 @@ class WALK:
                     else:
                         MARIO.big_image['Walk'][int(self.frame)].composite_draw(0, 'h', self.draw_mario_x, self.real_mario_y, bm_w, bm_h)
 
-
-
-class SIT:
+class DIE:
     def enter(self, event):
-        self.dir = 0
-        self.need_frame
+        if self.suicide:
+            pass
+        else:
+            self.y_velocity = self.jump_height
+            self.suicide = True
 
     def exit(self, event):
         pass
 
     def do(self):
-        pass
+        self.real_mario_y += self.y_velocity * 0.2
+        self.y_velocity -= self.y_gravity *0.15
 
     def draw(self):
-        pass
+        MARIO.small_image['Die'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
 
-
-class SHOOT:
-    def enter(self, event):
-        self.dir = 0
-        self.need_frame
-
-    def exit(self, event):
-        pass
-
-    def do(self):
-        pass
-
-    def draw(self):
-        pass
+def fire_ball(self):
+    ball = Ball(self.x, self.y, self.dir * RUN_SPEED_PPS * 10)
+    game_world.add_object(ball, 1)
 
 
 class MARIO:
@@ -297,7 +301,11 @@ class MARIO:
         self.see = False
         self.FALLING = False
         self.floor = False
-        self.side_block = False
+        self.left_block = False
+        self.suicide = False
+        self.right_block = False
+        self.on_pipe = False
+        self.shopping = False
 
 
 
@@ -314,6 +322,7 @@ class MARIO:
             self.cur_state.enter(self, event)
         self.a_count += 1
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
+
 
 
 
@@ -348,12 +357,29 @@ class MARIO:
         else:
             return self.draw_mario_x - 15, self.real_mario_y - 25, self.draw_mario_x+ 15, self.real_mario_y+ 25
     def handle_collision(self, other, group):
+        if not self.suicide:
+            if self.left_block:
+                self.real_mario_x -= 1
+                self.draw_mario_x -= 1
+                self.dir = 0
+                self.face_dir = -1
+                self.left_block = False
+            if self.right_block:
+                self.real_mario_x += 1
+                self.draw_mario_x += 1
+                self.dir = 0
+                self.face_dir = 1
+                self.right_block = False
             if not self.JUMPING:
                 self.y_velocity = 0
                 self.real_mario_y = other.y + 41
-                if self.side_block:
-                    self.dir = - self.dir
+                if 3 < other.tile < 6:
+                    self.on_pipe = True
+                else:
+                    self.on_pipe = False
+                self.floor = True
             self.FALLING = False
+
 
 
     # def fire_ball(self):
@@ -367,8 +393,9 @@ class MARIO:
 #3. 상태 변환 구현
 
 next_state = {
-    IDLE:  {RU: WALK,  LU: WALK,  RD: WALK,  LD: WALK, SPACE: IDLE, SU: IDLE, SD: IDLE},
-    WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: WALK, SU: WALK, SD: WALK}
+    IDLE:  {RU: WALK,  LU: WALK,  RD: WALK,  LD: WALK, SPACE: IDLE, SU: IDLE, SD: IDLE, SUICIDE: DIE},
+    WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: WALK, SU: WALK, SD: WALK, SUICIDE: DIE},
+    DIE: {RU: DIE, LU: DIE, RD: DIE, LD: DIE, SPACE: DIE, SU: DIE, SD: DIE, SUICIDE: DIE}
 }
 
 FRAMES_PER_ACTION = 4

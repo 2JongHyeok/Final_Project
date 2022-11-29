@@ -26,17 +26,17 @@ class Tiles:
         self.y = 0
         self.timer = 100
         if self.Grass_Left == None:
-            Tiles.Grass_Left = load_image('grass_left.png')
-            Tiles.Grass_Middle = load_image('grass_middle.png')
-            Tiles.Grass_Right = load_image('grass_right.png')
-            Tiles.Pipe_Left_Top = load_image('pipe_left_top.png')
-            Tiles.Pipe_Right_Top = load_image('pipe_right_top.png')
-            Tiles.Pipe_Left_middle = load_image('pipe_left_middle.png')
-            Tiles.Pipe_Right_middle = load_image('pipe_right_middle.png')
-            Tiles.coin_1 = load_image('coin_1.png')
-            Tiles.coin_2 = load_image('coin_2.png')
-            Tiles.coin_3 = load_image('coin_3.png')
-            Tiles.coin_4 = load_image('coin_4.png')
+            Tiles.Grass_Left = load_image('grass_left.png')# 1
+            Tiles.Grass_Middle = load_image('grass_middle.png')# 2
+            Tiles.Grass_Right = load_image('grass_right.png')# 3
+            Tiles.Pipe_Left_Top = load_image('pipe_left_top.png')# 4
+            Tiles.Pipe_Right_Top = load_image('pipe_right_top.png')# 5
+            Tiles.Pipe_Left_middle = load_image('pipe_left_middle.png')# 6
+            Tiles.Pipe_Right_middle = load_image('pipe_right_middle.png')# 7
+            Tiles.coin_1 = load_image('coin_1.png')# 8
+            Tiles.coin_2 = load_image('coin_2.png')# 9
+            Tiles.coin_3 = load_image('coin_3.png')# 10
+            Tiles.coin_4 = load_image('coin_4.png')# 11
 
     def update(self):
         self.timer -= 1

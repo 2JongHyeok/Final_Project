@@ -2,6 +2,7 @@ from pico2d import *
 import game_framework
 import game_world
 import server
+import title
 
 from background import BackGround
 from supermario import MARIO
@@ -128,9 +129,14 @@ def update():
     for a, b, group in game_world.all_collision_pairs():
         if 0 <= b.x <= 1600:
             if tile_collide(a, b):
-                if 0 < b.tile < 8:
-                    a.handle_collision(b, group)
-                    b.handle_collision(b, group)
+                a.handle_collision(b, group)
+                b.handle_collision(b, group)
+    if mario.real_mario_y < -250:
+        game_world.clear()
+        game_framework.change_state(title)
+    if mario.shopping:
+        game_framework.change_state(shop)
+
 
 def draw_world():
     for game_object in game_world.all_objects():
@@ -180,26 +186,28 @@ def collide(a,b):
     return True
 
 def tile_collide(a,b):
-    global on_block, mario
+    if b.tile > 7 or b.tile == 0:
+        return False
+
+    global on_block
     if b.tile == 0:
         return False
     la, ba, ra, ta = a.get_bb()
     lb, bb, rb, tb = b.get_bb()
+    if bb < ba < tb-3 and lb - 5 < ra < lb:
+        a.left_block = True
+    if bb < ba < tb-3 and rb < la < rb + 5:
+        a.right_block = True
+    if ta < bb: return False
+    if ba > tb: return False
 
     if la > rb: return False
     if ra < lb: return False
-    if not ra < lb and la > rb:
-        if ba == tb:
-            on_block = True
-            return True
-        else:
-            mario.side_block = True
-            return True
 
 
-    if ta < bb: return False
-    if ba > tb: return False
-    return True
+    if ba <= tb:
+        return True
+    # return True
 
 def test_self():
     import play_state
