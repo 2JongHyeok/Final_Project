@@ -169,11 +169,12 @@ class WALK:
     def do(self):
         global need_frame
         # print('DO WALK')
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % need_frame
-        if self.RUNNING:
-            self.real_mario_x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
-        else:
-            self.real_mario_x += self.dir * WALK_SPEED_PPS * game_framework.frame_time
+        if not self.side_block:
+            self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % need_frame
+            if self.RUNNING:
+                self.real_mario_x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
+            else:
+                self.real_mario_x += self.dir * WALK_SPEED_PPS * game_framework.frame_time
         self.real_mario_x = clamp(30, self.real_mario_x, 3170)
         if self.real_mario_x < 800:
             self.draw_mario_x = self.real_mario_x
@@ -306,6 +307,8 @@ class MARIO:
         self.right_block = False
         self.on_pipe = False
         self.shopping = False
+        self.on_block = False
+        self.side_block = False
 
 
 
@@ -358,18 +361,6 @@ class MARIO:
             return self.draw_mario_x - 15, self.real_mario_y - 25, self.draw_mario_x+ 15, self.real_mario_y+ 25
     def handle_collision(self, other, group):
         if not self.suicide:
-            if self.left_block:
-                self.real_mario_x -= 1
-                self.draw_mario_x -= 1
-                self.dir = 0
-                self.face_dir = -1
-                self.left_block = False
-            if self.right_block:
-                self.real_mario_x += 1
-                self.draw_mario_x += 1
-                self.dir = 0
-                self.face_dir = 1
-                self.right_block = False
             if not self.JUMPING:
                 self.y_velocity = 0
                 self.real_mario_y = other.y + 41
@@ -379,6 +370,7 @@ class MARIO:
                     self.on_pipe = False
                 self.floor = True
             self.FALLING = False
+            self.side_block = False
 
 
 

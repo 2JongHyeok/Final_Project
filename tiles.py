@@ -56,27 +56,27 @@ class Tiles:
         if self.tile == 0:
             pass
         if self.tile == 1:
-            Tiles.Grass_Left.clip_composite_draw(0,0,16,16,0,'',self.x,self.y, 40,40)
+            Tiles.Grass_Left.draw(self.x,self.y, 40, 40)
         if self.tile == 2:
-            Tiles.Grass_Middle.clip_composite_draw(0,0,16,16,0,'',self.x,self.y, 40,40)
+            Tiles.Grass_Middle.draw(self.x, self.y, 40, 40)
         if self.tile == 3:
-            Tiles.Grass_Right.clip_composite_draw(0,0,16,16,0,'',self.x,self.y, 40,40)
+            Tiles.Grass_Right.draw(self.x, self.y, 40, 40)
         if self.tile == 4:
-            Tiles.Pipe_Left_Top.clip_composite_draw(0,0,16,16,0,'',self.x,self.y, 40,40)
+            Tiles.Pipe_Left_Top.draw(self.x, self.y, 40, 40)
         if self.tile == 5:
-            Tiles.Pipe_Right_Top.clip_composite_draw(0,0,16,16,0,'',self.x,self.y, 40,40)
+            Tiles.Pipe_Right_Top.draw(self.x, self.y, 40, 40)
         if self.tile == 6:
-            Tiles.Pipe_Left_middle.clip_composite_draw(0,0,15,16,0,'',self.x,self.y, 40,40)
+            Tiles.Pipe_Left_middle.draw(self.x, self.y, 40, 40)
         if self.tile == 7:
-            Tiles.Pipe_Right_middle.clip_composite_draw(0,0,15,16,0,'',self.x, self.y, 40, 40)
+            Tiles.Pipe_Right_middle.draw(self.x, self.y, 40, 40)
         if self.tile == 8:
-            Tiles.coin_1.clip_composite_draw(0,0,12,16,0,'',self.x, self.y, 20, 20)
+            Tiles.coin_1.draw(self.x, self.y, 20, 20)
         if self.tile == 9:
-            Tiles.coin_2.clip_composite_draw(0,0,8,16,0,'',self.x, self.y, 20, 20)
+            Tiles.coin_2.draw(self.x, self.y, 20, 20)
         if self.tile == 10:
-            Tiles.coin_3.clip_composite_draw(0,0,6, 16,0,'',self.x, self.y, 20, 20)
+            Tiles.coin_3.draw(self.x, self.y, 20, 20)
         if self.tile == 11:
-            Tiles.coin_4.clip_composite_draw(0,0,8,16,0,'',self.x, self.y, 20, 20)
+            Tiles.coin_4.draw(self.x, self.y, 20, 20)
 
         if self.see and self.tile > 0:
             if self.x >= - 50 and self.x <= 1650:
