@@ -1,6 +1,8 @@
 from pico2d import *
 import game_framework
 import random
+
+import play_state
 from background import BackGround
 import game_world
 
@@ -169,12 +171,19 @@ class WALK:
     def do(self):
         global need_frame
         # print('DO WALK')
-        if not self.side_block:
-            self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % need_frame
-            if self.RUNNING:
-                self.real_mario_x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
-            else:
-                self.real_mario_x += self.dir * WALK_SPEED_PPS * game_framework.frame_time
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % need_frame
+        for block in play_state.tiles.copy():
+            if 0 < block.tile < 8:
+                if 600 <= block.x <= 1000:
+                    if play_state.side_collide(play_state.mario, block):
+                        if self.RUNNING:
+                            self.real_mario_x -= 2 * self.dir * RUN_SPEED_PPS * game_framework.frame_time
+                        else:
+                            self.real_mario_x -= 2 * self.dir * WALK_SPEED_PPS * game_framework.frame_time
+        if self.RUNNING:
+            self.real_mario_x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
+        else:
+            self.real_mario_x += self.dir * WALK_SPEED_PPS * game_framework.frame_time
         self.real_mario_x = clamp(30, self.real_mario_x, 3170)
         if self.real_mario_x < 800:
             self.draw_mario_x = self.real_mario_x
@@ -266,6 +275,20 @@ def fire_ball(self):
     ball = Ball(self.x, self.y, self.dir * RUN_SPEED_PPS * 10)
     game_world.add_object(ball, 1)
 
+class SHOPPING:
+    def enter(self, event):
+        pass
+
+    def exit(self, event):
+        pass
+
+    def do(self):
+        self.real_mario_y += self.y_velocity * 0.2
+        self.y_velocity -= self.y_gravity * 0.15
+
+    def draw(self):
+        MARIO.small_image['Die'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
+
 
 class MARIO:
     small_image = None
@@ -325,6 +348,7 @@ class MARIO:
             self.cur_state.enter(self, event)
         self.a_count += 1
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
+        self.side_block = False
 
 
 
@@ -363,13 +387,6 @@ class MARIO:
         if not self.suicide:
             if not self.JUMPING:
                 self.y_velocity = 0
-                if self.side_block:
-                    if 0 < self.draw_mario_x + 15 - (other.x - 20) < 1:
-                        self.real_mario_x -= 10
-                        self.side_block = False
-                    elif -1 < self.draw_mario_x - 15 - (other.x + 20) < 0:
-                        self.real_mario_x += 10
-                        self.side_block = False
                 self.real_mario_y = other.y + 42
                 if 3 < other.tile < 6:
                     self.on_pipe = True
@@ -377,12 +394,6 @@ class MARIO:
                     self.on_pipe = False
                 self.floor = True
             self.FALLING = False
-            if self.side_block:
-                if self.RUNNING:
-                    self.real_mario_x -= self.dir * RUN_SPEED_PPS * game_framework.frame_time* 1.1
-                else:
-                    self.real_mario_x -= self.dir * RUN_SPEED_PPS * game_framework.frame_time * 1.1
-                self.side_block = False
 
 
 
