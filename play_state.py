@@ -128,7 +128,7 @@ def update():
                     coin.tile = 0
     for a, b, group in game_world.all_collision_pairs():
         if 0 <= b.x <= 1600:
-            if tile_collide(a, b):
+            if gravity_check(a, b):
                 a.handle_collision(b, group)
                 b.handle_collision(b, group)
     if mario.real_mario_y < -250:
@@ -185,7 +185,7 @@ def collide(a,b):
         return False
     return True
 
-def tile_collide(a,b):
+def gravity_check(a,b):
     if b.tile > 7 or b.tile == 0:
         return False
 
@@ -195,15 +195,15 @@ def tile_collide(a,b):
     la, ba, ra, ta = a.get_bb()
     lb, bb, rb, tb = b.get_bb()
 
-    if ba < bb < tb:
+    if bb < ba < tb:
         if ra < lb:
-            if lb - ra < 80:
-                print(b.tile)
+            if lb - ra < 2:
                 a.side_block = True
+                return False
         if la > rb:
-            if la - rb < 80:
-                print(b.tile)
+            if la - rb < 2:
                 a.side_block = True
+                return False
 
     if ta < bb: return False
     if ba > tb: return False
@@ -211,9 +211,9 @@ def tile_collide(a,b):
     if la > rb: return False
     if ra < lb: return False
 
-
-    if ba <= tb:
-        return True
+    if la < lb < ra or la < rb < ra or lb < la < ra < rb:
+        if ba <= tb:
+            return True
     # return True
 
 def test_self():

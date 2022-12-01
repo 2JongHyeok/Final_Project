@@ -363,14 +363,26 @@ class MARIO:
         if not self.suicide:
             if not self.JUMPING:
                 self.y_velocity = 0
-                self.real_mario_y = other.y + 41
+                if self.side_block:
+                    if 0 < self.draw_mario_x + 15 - (other.x - 20) < 1:
+                        self.real_mario_x -= 10
+                        self.side_block = False
+                    elif -1 < self.draw_mario_x - 15 - (other.x + 20) < 0:
+                        self.real_mario_x += 10
+                        self.side_block = False
+                self.real_mario_y = other.y + 42
                 if 3 < other.tile < 6:
                     self.on_pipe = True
                 else:
                     self.on_pipe = False
                 self.floor = True
             self.FALLING = False
-            self.side_block = False
+            if self.side_block:
+                if self.RUNNING:
+                    self.real_mario_x -= self.dir * RUN_SPEED_PPS * game_framework.frame_time* 1.1
+                else:
+                    self.real_mario_x -= self.dir * RUN_SPEED_PPS * game_framework.frame_time * 1.1
+                self.side_block = False
 
 
 
