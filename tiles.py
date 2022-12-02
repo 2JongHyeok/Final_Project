@@ -17,6 +17,20 @@ class Tiles:
     coin_3 = None
     coin_4 = None
     Ground = None
+    Select_Stage_Right_Pipe = None
+    Select_Stage_Left_Pipe = None
+    Shop_Right_Pipe = None
+    Shop_Left_Pipe = None
+    Stage_1_Right_Pipe = None
+    Stage_1_Left_Pipe = None
+    Stage_2_Right_Pipe = None
+    Stage_2_Left_Pipe = None
+    Stage_3_Right_Pipe = None
+    Stage_3_Left_Pipe = None
+    Item_block_1 = None
+    Item_block_2 = None
+    Item_block_3 = None
+    Item_block_4 = None
 
 
     see = False
@@ -40,6 +54,20 @@ class Tiles:
             Tiles.coin_2 = load_image('./tilefiles/Coin (2).png')# 10
             Tiles.coin_3 = load_image('./tilefiles/Coin (3).png')# 11
             Tiles.coin_4 = load_image('./tilefiles/Coin (4).png')# 12
+            Tiles.Select_Stage_Left_Pipe = load_image('./tilefiles/Pipe (1).png')  # 13
+            Tiles.Select_Stage_Right_Pipe = load_image('./tilefiles/Pipe (2).png')  # 14
+            Tiles.Shop_Left_Pipe = load_image('./tilefiles/Pipe (1).png')  # 15
+            Tiles.Shop_Right_Pipe = load_image('./tilefiles/Pipe (2).png')  # 16
+            Tiles.Stage_1_Left_Pipe = load_image('./tilefiles/Pipe (1).png')  # 17
+            Tiles.Stage_1_Right_Pipe = load_image('./tilefiles/Pipe (2).png')  # 18
+            Tiles.Stage_2_Left_Pipe = load_image('./tilefiles/Pipe (1).png')  # 19
+            Tiles.Stage_2_Right_Pipe = load_image('./tilefiles/Pipe (2).png')  # 20
+            Tiles.Stage_3_Left_Pipe = load_image('./tilefiles/Pipe (1).png')  # 21
+            Tiles.Stage_3_Right_Pipe = load_image('./tilefiles/Pipe (2).png')  # 22
+            Tiles.Item_block_1 = load_image('./tilefiles/Item_Block (1).png') # 23
+            Tiles.Item_block_2 = load_image('./tilefiles/Item_Block (2).png') # 23
+            Tiles.Item_block_3 = load_image('./tilefiles/Item_Block (3).png') # 23
+            Tiles.Item_block_4 = load_image('./tilefiles/Item_Block (4).png') # 23
 
     def update(self):
         self.timer -= 1
@@ -82,6 +110,26 @@ class Tiles:
             Tiles.coin_3.draw(self.x, self.y, 20, 20)
         if self.tile == 12:
             Tiles.coin_4.draw(self.x, self.y, 20, 20)
+        if self.tile == 13:
+            Tiles.Select_Stage_Left_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 14:
+            Tiles.Select_Stage_Right_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 15:
+            Tiles.Shop_Left_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 16:
+            Tiles.Shop_Right_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 17:
+            Tiles.Stage_1_Left_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 18:
+            Tiles.Stage_1_Right_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 19:
+            Tiles.Stage_2_Left_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 20:
+            Tiles.Stage_2_Right_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 21:
+            Tiles.Stage_3_Left_Pipe.draw(self.x, self.y, 40, 40)
+        if self.tile == 22:
+            Tiles.Stage_3_Right_Pipe.draw(self.x, self.y, 40, 40)
 
 
         if self.see and self.tile > 0:

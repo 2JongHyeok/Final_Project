@@ -6,11 +6,11 @@ class BackGround:
     starmap_1 = None
     def __init__(self):
         if self.starmap_1 == None:
-            self.starmap_1 = load_image('star_map_1.png')
-            self.starmap_2 = load_image('star_map_2.png')
-            self.starmap_3 = load_image('star_map_3.png')
-            self.mansion_1 = load_image('mansion_1.png')
-            self.mansion_2 = load_image('mansion_2.png')
+            self.starmap_1 = load_image('./backgroundfiles/Star (1).png')
+            self.starmap_2 = load_image('./backgroundfiles/Star (1).png')
+            self.starmap_3 = load_image('./backgroundfiles/Star (1).png')
+            self.mansion_1 = load_image('./backgroundfiles/Mansion (1).png')
+            self.mansion_2 = load_image('./backgroundfiles/Mansion (2).png')
         self.stage = 1
         self.frame = 0
         self.need_frame = 0

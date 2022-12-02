@@ -1,9 +1,9 @@
 from pico2d import *
 import game_framework
-import random
 
 import play_state
-from background import BackGround
+import select_stage
+import server
 import game_world
 
 # 이벤트 정의
@@ -64,9 +64,10 @@ class IDLE:
             self.RUNNING = True
         if event == SU:
             self.RUNNING = False
-        if self.on_pipe:
-            if event == DD or event == DU:
-                self.shopping = True
+        if event == DD:
+            self.sit = True
+        elif event == DU:
+            self.sit = False
 
     def do(self):
         global need_frame
@@ -172,23 +173,39 @@ class WALK:
         global need_frame
         # print('DO WALK')
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % need_frame
-        for block in play_state.tiles.copy():
-            if 0 < block.tile < 8:
-                if 600 <= block.x <= 1000:
-                    if play_state.side_collide(play_state.mario, block):
-                        if self.RUNNING:
-                            self.real_mario_x -= 2 * self.dir * RUN_SPEED_PPS * game_framework.frame_time
-                        else:
-                            self.real_mario_x -= 2 * self.dir * WALK_SPEED_PPS * game_framework.frame_time
+        if self.in_select_stage:
+            for block in select_stage.server.tiles:
+                if 0 < block.tile < 8 or 12 < block.tile:
+                    if 0 <= block.x <= 1600:
+                        if select_stage.side_collide(server.mario, block):
+                            if self.RUNNING:
+                                self.real_mario_x -= 2 * self.dir * RUN_SPEED_PPS * game_framework.frame_time
+                            else:
+                                self.real_mario_x -= 2 * self.dir * WALK_SPEED_PPS * game_framework.frame_time
+        else:
+            for block in play_state.tiles.copy():
+                if 0 < block.tile < 8 or 12 < block.tile:
+                    if 600 <= block.x <= 1000:
+                        if play_state.side_collide(play_state.mario, block):
+                            if self.RUNNING:
+                                self.real_mario_x -= 2 * self.dir * RUN_SPEED_PPS * game_framework.frame_time
+                            else:
+                                self.real_mario_x -= 2 * self.dir * WALK_SPEED_PPS * game_framework.frame_time
         if self.RUNNING:
             self.real_mario_x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
         else:
             self.real_mario_x += self.dir * WALK_SPEED_PPS * game_framework.frame_time
-        self.real_mario_x = clamp(30, self.real_mario_x, 3170)
-        if self.real_mario_x < 800:
+        if self.in_select_stage:
+            self.real_mario_x = clamp(30, self.real_mario_x, 1570)
+        else:
+            self.real_mario_x = clamp(30, self.real_mario_x, 3170)
+        if self.in_select_stage:
             self.draw_mario_x = self.real_mario_x
-        elif self.real_mario_x > 2370:
-            self.draw_mario_x = self.real_mario_x - 1600
+        else:
+            if self.real_mario_x < 800:
+                self.draw_mario_x = self.real_mario_x
+            elif self.real_mario_x > 2370:
+                self.draw_mario_x = self.real_mario_x - 1600
         if self.JUMPING:
             self.real_mario_y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity *0.15
@@ -309,8 +326,6 @@ class MARIO:
         self.real_mario_x = 100
         self.real_mario_y = 500
         self.dir, self.face_dir = 0, 1
-        self.right_image = load_image('mario_right.png')
-        self.left_image = load_image('mario_left.png')
         self.y_gravity = 1
         self.jump_height = 15
         self.y_velocity = self.jump_height
@@ -328,11 +343,16 @@ class MARIO:
         self.left_block = False
         self.suicide = False
         self.right_block = False
-        self.on_pipe = False
         self.shopping = False
         self.on_block = False
         self.side_block = False
-
+        self.in_select_stage = False
+        self.select_pipe = False
+        self.shop_pipe = False
+        self.stage_1_pipe = False
+        self.stage_2_pipe = False
+        self.stage_3_pipe = False
+        self.sit = False
 
 
     def update(self):
@@ -388,10 +408,22 @@ class MARIO:
             if not self.JUMPING:
                 self.y_velocity = 0
                 self.real_mario_y = other.y + 42
-                if 3 < other.tile < 6:
-                    self.on_pipe = True
+                if 13 <= other.tile <= 14:
+                    self.select_pipe = True
+                elif 15 <= other.tile <= 16:
+                    self.shop_pipe = True
+                elif 17 <= other.tile <= 18:
+                    self.stage_1_pipe = True
+                elif 19 <= other.tile <= 20:
+                    self.stage_2_pipe = True
+                elif 21 <= other.tile <= 22:
+                    self.stage_3_pipe = True
                 else:
-                    self.on_pipe = False
+                    self.select_pipe = False
+                    self.shop_pipe = False
+                    self.stage_1_pipe = False
+                    self.stage_2_pipe = False
+                    self.stage_3_pipe = False
                 self.floor = True
             self.FALLING = False
 

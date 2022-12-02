@@ -3,7 +3,7 @@ import game_framework
 import game_world
 import play_state
 import server
-import select_stage
+import shop
 
 from supermario import MARIO
 from tiles import Tiles
@@ -12,14 +12,14 @@ image = None
 change_stage = False
 
 stage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-         0, 0, 13, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-         0, 0, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 16, 0, 0, 0, 0, 17, 18, 0, 0, 0, 0, 19, 20, 0, 0, 0, 0, 21, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 7, 0, 0, 0, 0, 6, 7, 0, 0, 0, 0, 6, 7, 0, 0, 0, 0, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3]
 
 
 def enter():
     global image
-    image = load_image('./backgroundfiles/itemshop.png')
+    image = load_image('./backgroundfiles/Select_stage.png')
 
     server.mario = MARIO()
     server.mario.in_select_stage = True
@@ -46,6 +46,9 @@ def exit():
     change_stage = False
     game_world.clear()
 
+
+def update():
+    pass
 
 def handle_events():
     events = get_events()
@@ -87,10 +90,28 @@ def update():
             if gravity_check(a, b):
                 a.handle_collision(b, group)
                 b.handle_collision(a, group)
-
     if server.mario.sit:
-        if server.mario.select_pipe:
-            game_framework.change_state(select_stage)
+        if server.mario.shop_pipe:
+            game_framework.change_state(shop)
+            server.mario.shop_pipe = False
+        elif server.mario.stage_1_pipe:
+            server.mario.select_pipe = False
+            play_state.map = 1
+            game_framework.change_state(play_state)
+        elif server.mario.stage_2_pipe:
+            server.mario.select_pipe = False
+            play_state.map = 2
+            game_framework.change_state(play_state)
+        elif server.mario.stage_3_pipe:
+            server.mario.select_pipe = False
+            play_state.map = 3
+            game_framework.change_state(play_state)
+    server.mario.select_pipe = False
+    server.mario.shop_pipe = False
+    server.mario.stage_1_pipe = False
+    server.mario.stage_2_pipe = False
+    server.mario.stage_3_pipe = False
+
 
 def pause():
     pass

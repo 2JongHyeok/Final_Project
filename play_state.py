@@ -3,6 +3,8 @@ import game_framework
 import game_world
 import server
 import title
+import select_stage
+
 
 from background import BackGround
 from supermario import MARIO
@@ -15,6 +17,8 @@ background = None
 ball = None
 tiles = []
 flag = None
+
+map = 1
 
 on_block = False
 mario_side_block = False
@@ -74,18 +78,6 @@ def handle_events():
                     for j in range(80):
                         tiles[i * 80 + j].see = True
                 mario.see = True
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_F1):
-            for i in range(10):
-                for j in range(80):
-                    tiles[i * 80 + j].tile = map_1[(9 - i) * 80 + j]
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_F2):
-            for i in range(10):
-                for j in range(80):
-                    tiles[i * 80 + j].tile = map_2[(9 - i) * 80 + j]
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_F3):
-            for i in range(10):
-                for j in range(80):
-                    tiles[i * 80 + j].tile = map_3[(9 - i) * 80 + j]
         else:
             mario.handle_event(event)
 
@@ -97,6 +89,7 @@ def enter():
     background = BackGround()
     game_world.add_object(background, 0)
     game_world.add_object(mario, 1)
+
     for i in range(10):
         for j in range(80):
             tiles.append(Tiles())
@@ -106,8 +99,21 @@ def enter():
             tiles[(9-i) * 80 + j].x = tiles[(9-i) * 80 + j].fixed_x - mario.real_mario_x + 100
             tiles[(9-i) * 80 + j].y = (9-i) * 40 + 20
             tiles[i * 80 + j].tile = map_1[(9-i) * 80 + j]
-
             game_world.add_object(tiles[i * 80 + j],0)
+    if map == 1:
+        for i in range(10):
+            for j in range(80):
+                tiles[i * 80 + j].tile = map_1[(9 - i) * 80 + j]
+
+    elif map == 2:
+        for i in range(10):
+            for j in range(80):
+                tiles[i * 80 + j].tile = map_2[(9 - i) * 80 + j]
+    elif map == 3:
+        for i in range(10):
+            for j in range(80):
+                tiles[i * 80 + j].tile = map_3[(9 - i) * 80 + j]
+
     server.goomba = Goomba()
     game_world.add_object(server.goomba, 1)
     flag = True
@@ -134,8 +140,10 @@ def update():
     if mario.real_mario_y < -250:
         game_world.clear()
         game_framework.change_state(title)
-    if mario.shopping:
-        game_framework.change_state(shop)
+    if mario.sit:
+        if mario.select_pipe:
+            game_framework.change_state(select_stage)
+
 
 
 def draw_world():
@@ -186,7 +194,7 @@ def collide(a,b):
     return True
 
 def gravity_check(a,b):
-    if b.tile > 7 or b.tile == 0:
+    if 7 < b.tile < 12 or b.tile == 0:
         return False
 
     global on_block

@@ -1,12 +1,12 @@
 from pico2d import *
 import game_framework
-import play_state
+import select_stage
 
 image = None
 
 def enter():
     global image
-    image = load_image('title.png')
+    image = load_image('./backgroundfiles/title.png')
 
 def exit():
     global image
@@ -21,7 +21,7 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            game_framework.change_state(play_state)
+            game_framework.change_state(select_stage)
 
 def draw():
     clear_canvas()
