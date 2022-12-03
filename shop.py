@@ -51,7 +51,6 @@ def exit():
     change_stage = False
     server.mario.in_shop = False
     server.goomba = []
-    server.mario = []
     server.bowser = None
     server.tiles = []
     game_world.clear()

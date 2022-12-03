@@ -23,36 +23,38 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 10
 
-animation_name = ['Idle', 'Walk']
+animation_name = ['Walk']
+color = ['Red_', 'Green_', 'Blue_', 'Yellow_']
 
-class Goomba:
+class Turtle:
     image = None
     see = False
     hp_bar = None
 
     def load_images(self):
         if self.image == None:
-            Goomba.image = {}
+            Turtle.image = {}
             for name in animation_name:
-                Goomba.image[name] = [load_image("./goombafiles/"+ name + " (%d)" % i + ".png") for i in range(1,3)]
-                Goomba.hp_bar = load_image("./goombafiles/Hp_Bar.png")
+                Turtle.image[name] = [load_image("./turtlefiles/"+color[self.col] + name + " (%d)" % i + ".png") for i in range(1,5)]
+                Turtle.hp_bar = load_image("./turtlefiles/Hp_Bar.png")
 
 
     def __init__(self):
         # self.fixed_x = random.randint(100, 2800)
 
-        self.fixed_x = random.randint (300, 2600)
+        self.fixed_x = random.randint (300, 1000)
         self.y = 300
         self.x = self.fixed_x
+        self.col = random.randint(0, 4)
         self.load_images()
         self.dir = -1
         self.speed = 0.0001
         self.frame = 0
-        self.HP = 100
+        self.HP = 500
         self.FALLING = True
         self.y_gravity = 1
         self.y_velocity = 0
-        server.goomba.append(self)
+        server.turtle.append(self)
         self.first = True
 
 
@@ -97,7 +99,7 @@ class Goomba:
                     server.fireball.remove(fire)
         else:
             if self.first:
-                server.Mario_Coin += 5
+                server.Mario_Coin += 20
                 self.first = False
 
 
@@ -106,10 +108,10 @@ class Goomba:
     def draw(self):
         if self.HP > 0:
             if self.dir == 1:
-                Goomba.image['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 40, 40)
+                Turtle.image['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 40, 40)
             else:
-                Goomba.image['Walk'][int(self.frame)].draw(self.x, self.y, 40, 40)
-            Goomba.hp_bar.draw(self.x, self.y + 30, self.HP, 10)
+                Turtle.image['Walk'][int(self.frame)].draw(self.x, self.y, 40, 40)
+            Turtle.hp_bar.draw(self.x, self.y + 30, self.HP, 10)
             global see
             if self.see and self.tile > 0:
                 draw_rectangle(*self.get_bb())
@@ -118,12 +120,12 @@ class Goomba:
         pass
 
 
-FRAMES_PER_ACTION = 2
-TIME_PER_ACTION = 0.5
+FRAMES_PER_ACTION = 4
+TIME_PER_ACTION = 3
 ACTION_PER_TIME = 1.0/TIME_PER_ACTION
 PIXEL_PER_METER = 10/0.3
 
-WALK_SPEED_KMPH = 10
+WALK_SPEED_KMPH = 20
 WALK_SPEED_MPM = WALK_SPEED_KMPH * 1000 / 60
 WALK_SPEED_MPS = WALK_SPEED_MPM / 60
 WALK_SPEED_PPS = WALK_SPEED_MPS * PIXEL_PER_METER

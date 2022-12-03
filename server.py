@@ -3,9 +3,11 @@ goomba= None
 tiles = []
 fireball = []
 goomba = []
+turtle = []
 Mario_Hp = 100
 Mario_Coin = 0
 Mario_Att = 10
+clear = False
 
 Max_Hp = 100
 

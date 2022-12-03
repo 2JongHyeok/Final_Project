@@ -96,7 +96,8 @@ class Bowser:
                     server.fireball.remove(fire)
         else:
             if self.first:
-                server.Mario_Coin += 5
+                server.clear = True
+                server.Mario_Coin += 10000
                 self.first = False
 
 

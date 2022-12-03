@@ -60,7 +60,7 @@ class IDLE:
         global need_frame, see
         # print('EXIT IDLE')
         if self.floor:
-            if event == SPACE:
+            if event == UD or event == UU:
                 self.y_velocity = self.jump_height
                 self.JUMPING = True
                 self.floor = False
@@ -169,7 +169,7 @@ class WALK:
         print('EXIT WALK')
         self.face_dir = self.dir
         if self.floor:
-            if event == SPACE:
+            if event == UU or event == UD:
                 self.y_velocity = self.jump_height
                 self.JUMPING = True
                 self.floor = False
@@ -394,7 +394,8 @@ class MARIO:
             if server.goomba:
                 for i in server.goomba:
                     if monster_collision(self, i):
-                        server.Mario_Hp -= 1
+                        if i.HP > 0:
+                            server.Mario_Hp -= 1
         if play_state.map == 3:
             if monster_collision(server.mario, server.bowser):
                 server.Mario_Hp -= 1
@@ -484,9 +485,9 @@ def monster_collision(a, b):
 #3. 상태 변환 구현
 
 next_state = {
-    IDLE:  {RU: WALK,  LU: WALK,  RD: WALK,  LD: WALK, SPACE: IDLE, SU: IDLE, SD: IDLE, SUICIDE: DIE, XD: IDLE},
-    WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: WALK, SU: WALK, SD: WALK, SUICIDE: DIE, XD: WALK},
-    DIE: {RU: DIE, LU: DIE, RD: DIE, LD: DIE, SPACE: DIE, SU: DIE, SD: DIE, SUICIDE: DIE}
+    IDLE:  {RU: WALK,  LU: WALK,  RD: WALK,  LD: WALK, UD: IDLE, UU: IDLE, SU: IDLE, SD: IDLE, SUICIDE: DIE, XD: IDLE},
+    WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE,UD: WALK, UU: WALK, SU: WALK, SD: WALK, SUICIDE: DIE, XD: WALK},
+    DIE: {RU: DIE, LU: DIE, RD: DIE, LD: DIE,UD:DIE, UU: DIE, SU: DIE, SD: DIE, SUICIDE: DIE}
 }
 
 FRAMES_PER_ACTION = 4

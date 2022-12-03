@@ -7,7 +7,10 @@ image = None
 
 def enter():
     global image
-    image = load_image('./backgroundfiles/title.png')
+    if server.clear:
+        image = load_image('./backgroundfiles/clear.png')
+    else:
+        image = load_image('./backgroundfiles/title.png')
 
 def exit():
     global image

@@ -52,14 +52,14 @@ class FireBall:
 
         for block in server.tiles:
             if 0 < block.tile < 8 or 12 < block.tile:
-                if 0 <= block.x <= 1600:
+                if 0 <= block.x <= 3200:
                     if side_collide(self, block):
                         for i in game_world.all_objects():
                             if i == self:
                                 game_world.remove_object(self)
 
         for block in server.tiles:
-            if 0 <= block.x <= 1600:
+            if 0 <= block.x <= 3200:
                 if gravity_check(self, block):
                     self.y_velocity = self.jump_height
                     self.real_mario_y = block.y + 42
