@@ -6,10 +6,11 @@ import select_stage
 import server
 import game_world
 import shop
+from fireball import FireBall
 
 # 이벤트 정의
-RD, LD, UD, DD, SD, RU, LU, UU, DU, SU, SPACE, K1, K2, SUICIDE = range(14)
-event_name = ['RD', 'LD', 'UD', 'DD', 'SD', 'RU', 'LU', 'UU', 'DU', 'SU', 'SPACE', 'K1', 'K2', 'SUICIDE']
+RD, LD, UD, DD, SD, RU, LU, UU, DU, SU, SPACE, XD, K1, K2, SUICIDE = range(15)
+event_name = ['RD', 'LD', 'UD', 'DD', 'SD', 'RU', 'LU', 'UU', 'DU', 'SU', 'SPACE', 'XD', 'K1', 'K2', 'SUICIDE']
 animation_names = ['Idle', 'Walk', 'Run', 'Die', 'Sit', 'Jump', 'Fall']
 sm_w = 30 # 작은 마리오 가로
 sm_h = 40 # 작은 마리오 세로
@@ -28,6 +29,7 @@ key_event_table = {
     (SDL_KEYUP, SDLK_UP): UU, # 위쪽 키 땠을 때
     (SDL_KEYUP, SDLK_DOWN): DU, # 아래쪽 키 땠을 때
     (SDL_KEYUP, SDLK_LSHIFT): SU, # 왼쪽 쉬프트 키 땠을 때
+    (SDL_KEYDOWN, SDLK_x) : XD,
     (SDL_KEYDOWN, SDLK_1) : K1,
     (SDL_KEYDOWN, SDLK_2) : K2,
 }
@@ -69,6 +71,8 @@ class IDLE:
             self.sit = True
         elif event == DU:
             self.sit = False
+        if event == XD:
+            self.fire_ball()
 
     def do(self):
         global need_frame
@@ -174,6 +178,8 @@ class WALK:
             self.RUNNING = False
         if self.real_mario_y < 0:
             self.suicide = True
+        if event == XD:
+            self.fire_ball()
 
 
     def do(self):
@@ -190,10 +196,10 @@ class WALK:
                             else:
                                 self.real_mario_x -= 2 * self.dir * WALK_SPEED_PPS * game_framework.frame_time
         else:
-            for block in play_state.tiles.copy():
+            for block in server.tiles.copy():
                 if 0 < block.tile < 8 or 12 < block.tile:
                     if 600 <= block.x <= 1000:
-                        if play_state.side_collide(play_state.mario, block):
+                        if play_state.side_collide(server.mario, block):
                             if self.RUNNING:
                                 self.real_mario_x -= 2 * self.dir * RUN_SPEED_PPS * game_framework.frame_time
                             else:
@@ -406,8 +412,8 @@ class MARIO:
             self.add_event(key_event)
 
     def fire_ball(self):
-        ball = Ball(self.x, self.y, self.dir * RUN_SPEED_PPS * 10)
-        game_world.add_object(ball, 1)
+        fireball = FireBall(self.real_mario_x, self.real_mario_y, self.face_dir)
+        game_world.add_object(fireball,1)
 
     def get_bb(self):
         if self.small_mario:
@@ -459,8 +465,8 @@ class MARIO:
 #3. 상태 변환 구현
 
 next_state = {
-    IDLE:  {RU: WALK,  LU: WALK,  RD: WALK,  LD: WALK, SPACE: IDLE, SU: IDLE, SD: IDLE, SUICIDE: DIE},
-    WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: WALK, SU: WALK, SD: WALK, SUICIDE: DIE},
+    IDLE:  {RU: WALK,  LU: WALK,  RD: WALK,  LD: WALK, SPACE: IDLE, SU: IDLE, SD: IDLE, SUICIDE: DIE, XD: IDLE},
+    WALK: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, SPACE: WALK, SU: WALK, SD: WALK, SUICIDE: DIE, XD: WALK},
     DIE: {RU: DIE, LU: DIE, RD: DIE, LD: DIE, SPACE: DIE, SU: DIE, SD: DIE, SUICIDE: DIE}
 }
 

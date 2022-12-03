@@ -1,6 +1,8 @@
 mario = None
 goomba= None
 tiles = []
+fireball = []
+goomba = []
 Mario_Hp = 100
 Mario_Coin = 200
 Mario_Att = 10

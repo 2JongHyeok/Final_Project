@@ -15,7 +15,6 @@ from goomba import Goomba
 mario = None
 background = None
 ball = None
-tiles = []
 flag = None
 
 map = 1
@@ -68,56 +67,58 @@ def handle_events():
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_0):
-            if tiles[0].see:
+            if server.tiles[0].see:
                 for i in range(10):
                     for j in range(80):
-                        tiles[i * 80 + j].see = False
-                mario.see = False
+                        server.tiles[i * 80 + j].see = False
+                server.mario.see = False
             else:
                 for i in range(10):
                     for j in range(80):
-                        tiles[i * 80 + j].see = True
-                mario.see = True
+                        server.tiles[i * 80 + j].see = True
+                server.mario.see = True
         else:
-            mario.handle_event(event)
+            server.mario.handle_event(event)
 
 
 # 초기화
 def enter():
-    global mario, background, flag
-    mario = MARIO()
+    global background, flag
+    server.mario = MARIO()
     background = BackGround()
     game_world.add_object(background, 0)
-    game_world.add_object(mario, 1)
+    game_world.add_object(server.mario, 1)
+
 
     for i in range(10):
         for j in range(80):
-            tiles.append(Tiles())
+            server.tiles.append(Tiles())
+
     for i in range(10):
         for j in range(80):
-            tiles[(9-i) * 80 + j].fixed_x = j * 40 + 20
-            tiles[(9-i) * 80 + j].x = tiles[(9-i) * 80 + j].fixed_x - mario.real_mario_x + 100
-            tiles[(9-i) * 80 + j].y = (9-i) * 40 + 20
-            tiles[i * 80 + j].tile = map_1[(9-i) * 80 + j]
-            game_world.add_object(tiles[i * 80 + j],0)
+            server.tiles[(9-i) * 80 + j].fixed_x = j * 40 + 20
+            server.tiles[(9-i) * 80 + j].x = server.tiles[(9-i) * 80 + j].fixed_x - server.mario.real_mario_x + 100
+            server.tiles[(9-i) * 80 + j].y = (9-i) * 40 + 20
+            server.tiles[i * 80 + j].tile = map_1[(9-i) * 80 + j]
+            game_world.add_object(server.tiles[i * 80 + j],0)
     if map == 1:
         for i in range(10):
             for j in range(80):
-                tiles[i * 80 + j].tile = map_1[(9 - i) * 80 + j]
+                server.tiles[i * 80 + j].tile = map_1[(9 - i) * 80 + j]
 
     elif map == 2:
         for i in range(10):
             for j in range(80):
-                tiles[i * 80 + j].tile = map_2[(9 - i) * 80 + j]
+                server.tiles[i * 80 + j].tile = map_2[(9 - i) * 80 + j]
     elif map == 3:
         for i in range(10):
             for j in range(80):
-                tiles[i * 80 + j].tile = map_3[(9 - i) * 80 + j]
+                server.tiles[i * 80 + j].tile = map_3[(9 - i) * 80 + j]
 
     server.goomba = Goomba()
     game_world.add_object(server.goomba, 1)
     flag = True
-    game_world.add_collision_pairs(mario, tiles, 'mario:coins')
+    game_world.add_collision_pairs(server.mario, server.tiles, 'mario:coins')
 # 종료
 def exit():
     game_world.clear()
@@ -126,11 +127,11 @@ def update():
     for game_object in game_world.all_objects():
         game_object.update()
     update_background_And_Tiles()
-    mario.floor = False
-    for coin in tiles.copy():
+    server.mario.floor = False
+    for coin in server.tiles.copy():
         if 9 < coin.tile < 13:
             if 0 <= coin.x <= 1600:
-                if collide(mario, coin):
+                if collide(server.mario, coin):
                     server.Mario_Coin += 5
                     coin.tile = 0
     for a, b, group in game_world.all_collision_pairs():
@@ -138,11 +139,11 @@ def update():
             if gravity_check(a, b):
                 a.handle_collision(b, group)
                 b.handle_collision(a, group)
-    if mario.real_mario_y < -250:
+    if server.mario.real_mario_y < -250:
         game_world.clear()
         game_framework.change_state(title)
-    if mario.sit:
-        if mario.select_pipe:
+    if server.mario.sit:
+        if server.mario.select_pipe:
             game_framework.change_state(select_stage)
 
 
@@ -168,19 +169,19 @@ def resume():
 def update_background_And_Tiles():
     global flag, mp, mn, mm
     if flag:
-        mp = mario.real_mario_x
-        mn = mario.real_mario_x
+        mp = server.mario.real_mario_x
+        mn = server.mario.real_mario_x
         flag = False
     mp = mn
-    mn = mario.real_mario_x
+    mn = server.mario.real_mario_x
     mm = mp - mn
     background.frame = (background.frame + 1) % background.need_frame
-    if 800 <= mario.real_mario_x <= 2400:
-        background.play_x = mario.real_mario_x
-        if(mario.dir != 0):
+    if 800 <= server.mario.real_mario_x <= 2400:
+        background.play_x = server.mario.real_mario_x
+        if(server.mario.dir != 0):
             for i in range(10):
                 for j in range(80):
-                    tiles[i * 80 + j].x = tiles[i * 80 + j].fixed_x - mario.real_mario_x + 800
+                    server.tiles[i * 80 + j].x = server.tiles[i * 80 + j].fixed_x - server.mario.real_mario_x + 800
 
 
 
