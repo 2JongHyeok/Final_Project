@@ -127,6 +127,10 @@ def enter():
     game_world.add_collision_pairs(server.mario, server.tiles, 'mario:coins')
 # 종료
 def exit():
+    server.goomba = []
+    server.mario = []
+    server.bowser = None
+    server.tiles = []
     game_world.clear()
 
 def update():

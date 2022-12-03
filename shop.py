@@ -50,6 +50,10 @@ def exit():
     del image, font
     change_stage = False
     server.mario.in_shop = False
+    server.goomba = []
+    server.mario = []
+    server.bowser = None
+    server.tiles = []
     game_world.clear()
 
 
@@ -166,7 +170,8 @@ def head_collide(a,b):
         if -2 <= bb - ta <= 0:
             server.mario.head_collision = True
             if tiles.hp_start <= b.tile <= tiles.hp_start + 3:
-                server.Mario_Hp += 5
+                server.Max_Hp += 5
+                server.Mario_Hp = server.Max_Hp
                 server.Mario_Coin -= server.Hp_Need_Money
                 server.Hp_Need_Money += 5
             elif tiles.att_start <= b.tile <= tiles.att_start +3:

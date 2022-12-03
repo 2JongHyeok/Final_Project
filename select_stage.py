@@ -48,6 +48,8 @@ def exit():
     change_stage = False
     server.mario.in_select_stage = False
     game_world.clear()
+    server.tiles = []
+
 
 
 
