@@ -26,6 +26,7 @@ class FireBall:
         self.jump_height = 5
         self.y_velocity = self.jump_height
         self.frame = 0
+        server.fireball.append(self)
 
 
     def draw(self):

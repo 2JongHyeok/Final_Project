@@ -38,6 +38,7 @@ class Goomba:
 
     def __init__(self):
         # self.fixed_x = random.randint(100, 2800)
+        self.hp_bar = load_image("./goombafiles/Hp_Bar.png")
         self.fixed_x = 200
         self.y = 300
         self.x = self.fixed_x
@@ -50,6 +51,7 @@ class Goomba:
         self.y_gravity = 1
         self.y_velocity = 0
         server.goomba.append(self)
+        self.first = True
 
 
     def handle_collision(self, other, group):
@@ -60,51 +62,53 @@ class Goomba:
         return self.x - 20, self.y - 20, self.x + 20, self.y + 20
 
     def update(self):
-
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
-        self.fixed_x += self.speed * self.dir * game_framework.frame_time
-        if 800 < server.mario.real_mario_x < 2800:
-            self.x = self.fixed_x - server.mario.real_mario_x + 800
-        else:
-            self.x = self.fixed_x
-        for i in server.tiles:
-            if side_collide(self, i):
+        if self.HP > 0:
+            self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
+            self.fixed_x += self.speed * self.dir * game_framework.frame_time
+            if 800 < server.mario.real_mario_x < 2800:
+                self.x = self.fixed_x - server.mario.real_mario_x + 800
+            else:
+                self.x = self.fixed_x
+            for i in server.tiles:
+                if side_collide(self, i):
+                    self.dir = -self.dir
+            if self.fixed_x + self.dir < 20 or self.fixed_x + self.dir > 3580:
                 self.dir = -self.dir
-        if self.fixed_x + self.dir < 20 or self.fixed_x + self.dir > 3580:
-            self.dir = -self.dir
-        if self.FALLING:
-            self.y += self.y_velocity * 0.2
-            self.y_velocity -= self.y_gravity * 0.15
+            if self.FALLING:
+                self.y += self.y_velocity * 0.2
+                self.y_velocity -= self.y_gravity * 0.15
 
-        self.FALLING = False
-        for i in server.tiles:
-            if gravity_check(self, i):
-                print('a')
-                self.Falling = False
-                self.y_velocity = 0
-                self.y = i.y + 41
+            self.FALLING = False
+            for i in server.tiles:
+                if gravity_check(self, i):
+                    self.Falling = False
+                    self.y_velocity = 0
+                    self.y = i.y + 41
+            else:
+                self.FALLING = True
+            for fire in server.fireball:
+                if fire_ball_collision(self, fire):
+                    print('A')
+                    self.HP -= server.Mario_Att
+                    server.fireball.remove(fire)
         else:
-            self.FALLING = True
-        for fire in server.fireball:
-            if fire_ball_collision(self, fire):
-                self.HP -= server.Mario_Att
-                server.fireball.remove(fire)
-
-        if self.HP < 0:
-            game_world.remove_object(self)
-            server.goomba.pop(self)
+            if self.first:
+                server.Mario_Coin += 5
+                self.first = False
 
 
 
 
     def draw(self):
-        if self.dir == 1:
-            Goomba.image['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 40, 40)
-        else:
-            Goomba.image['Walk'][int(self.frame)].draw(self.x, self.y, 40, 40)
-        global see
-        if self.see and self.tile > 0:
-            draw_rectangle(*self.get_bb())
+        if self.HP > 0:
+            if self.dir == 1:
+                Goomba.image['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 40, 40)
+            else:
+                Goomba.image['Walk'][int(self.frame)].draw(self.x, self.y, 40, 40)
+            self.hp_bar.draw(self.x, self.y + 30, self.HP, 10)
+            global see
+            if self.see and self.tile > 0:
+                draw_rectangle(*self.get_bb())
 
     def handle_event(self):
         pass
