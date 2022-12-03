@@ -23,36 +23,35 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 10
 
-animation_name = ['Idle', 'Walk']
+animation_name = ['Walk']
 
-class Goomba:
+class Bowser:
     image = None
     see = False
     hp_bar = None
 
     def load_images(self):
         if self.image == None:
-            Goomba.image = {}
+            Bowser.image = {}
             for name in animation_name:
-                Goomba.image[name] = [load_image("./goombafiles/"+ name + " (%d)" % i + ".png") for i in range(1,3)]
-                Goomba.hp_bar = load_image("./goombafiles/Hp_Bar.png")
+                Bowser.image[name] = [load_image("./bowserfiles/"+ name + " (%d)" % i + ".png") for i in range(1,18)]
+                Bowser.hp_bar = load_image("./bowserfiles/Hp_Bar.png")
 
 
     def __init__(self):
         # self.fixed_x = random.randint(100, 2800)
 
-        self.fixed_x = random.randint (300, 2600)
+        self.fixed_x = 1000
         self.y = 300
         self.x = self.fixed_x
         self.load_images()
         self.dir = -1
         self.speed = 100
         self.frame = 0
-        self.HP = 100
+        self.HP = 1000
         self.FALLING = True
         self.y_gravity = 1
         self.y_velocity = 0
-        server.goomba.append(self)
         self.first = True
 
 
@@ -61,7 +60,7 @@ class Goomba:
 
 
     def get_bb(self):
-        return self.x - 20, self.y - 20, self.x + 20, self.y + 20
+        return self.x - 100, self.y - 100, self.x + 100, self.y + 100
 
     def update(self):
         if self.HP > 0:
@@ -74,7 +73,7 @@ class Goomba:
             for i in server.tiles:
                 if side_collide(self, i):
                     self.dir = -self.dir
-            if self.fixed_x + self.dir < 20 or self.fixed_x + self.dir > 3580:
+            if self.fixed_x + self.dir < 100 or self.fixed_x + self.dir > 3500:
                 self.dir = -self.dir
             if self.FALLING:
                 self.y += self.y_velocity * 0.2
@@ -85,7 +84,7 @@ class Goomba:
                 if gravity_check(self, i):
                     self.Falling = False
                     self.y_velocity = 0
-                    self.y = i.y + 41
+                    self.y = i.y + 120
             else:
                 self.FALLING = True
             for fire in server.fireball:
@@ -105,11 +104,11 @@ class Goomba:
 
     def draw(self):
         if self.HP > 0:
-            if self.dir == 1:
-                Goomba.image['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 40, 40)
+            if self.dir == -1:
+                Bowser.image['Walk'][int(self.frame)].composite_draw(0, 'h', self.x, self.y, 200, 200)
             else:
-                Goomba.image['Walk'][int(self.frame)].draw(self.x, self.y, 40, 40)
-            Goomba.hp_bar.draw(self.x, self.y + 30, self.HP, 10)
+                Bowser.image['Walk'][int(self.frame)].draw(self.x, self.y, 200, 200)
+            Bowser.hp_bar.draw(self.x, self.y + 130, self.HP, 30)
             global see
             if self.see and self.tile > 0:
                 draw_rectangle(*self.get_bb())

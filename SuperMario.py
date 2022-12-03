@@ -6,6 +6,7 @@ import select_stage
 import server
 import game_world
 import shop
+import title
 from fireball import FireBall
 
 # 이벤트 정의
@@ -389,6 +390,16 @@ class MARIO:
         self.a_count += 1
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
         self.side_block = False
+        if 0 < play_state.map < 3:
+            if server.goomba:
+                for i in server.goomba:
+                    if monster_collision(self, i):
+                        server.Mario_Hp -= 1
+        if play_state.map == 3:
+            if monster_collision(server.mario, server.bowser):
+                server.Mario_Hp -= 1
+        if server.Mario_Hp < 0:
+            game_framework.change_state(title)
 
 
 
@@ -453,6 +464,14 @@ class MARIO:
             self.FALLING = False
 
 
+def monster_collision(a, b):
+    la, ba, ra, ta = a.get_bb()
+    lb, bb, rb, tb = b.get_bb()
+    if ta < bb: return False
+    if ba > tb: return False
+    if la > rb: return False
+    if ra < lb: return False
+    return True
 
     # def fire_ball(self):
     #     print('FIRE BALL')

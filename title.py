@@ -1,6 +1,7 @@
 from pico2d import *
 import game_framework
 import select_stage
+import server
 
 image = None
 
@@ -21,8 +22,10 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            game_framework.change_state(select_stage)
-
+            if server.Mario_Hp > 0:
+                game_framework.change_state(select_stage)
+            else:
+                game_framework.quit()
 def draw():
     clear_canvas()
     image.draw_to_origin(0,0,1600,800)

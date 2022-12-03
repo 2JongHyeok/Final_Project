@@ -10,6 +10,7 @@ from tiles import Tiles
 
 image = None
 change_stage = False
+font = None
 
 stage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 16, 0, 0, 0, 0, 17, 18, 0, 0, 0, 0, 19, 20, 0, 0, 0, 0, 21, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -18,7 +19,8 @@ stage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 
 def enter():
-    global image
+    global image, font
+    font = load_font('ENCR10B.TTF', 40)
     image = load_image('./backgroundfiles/Select_stage.png')
 
     server.mario = MARIO()
@@ -41,8 +43,8 @@ def enter():
 
 
 def exit():
-    global image, change_stage
-    del image
+    global image, change_stage,font
+    del image, font
     change_stage = False
     server.mario.in_select_stage = False
     game_world.clear()
@@ -79,6 +81,16 @@ def draw():
     image.draw_to_origin(0,0,1600,800)
     for game_object in game_world.all_objects():
         game_object.draw()
+    font.draw(400, 300, 'Shop', (255, 0, 255))
+    font.draw(600, 300, 'Stage_1', (255, 0, 255))
+    if server.Mario_Att < 30:
+        font.draw(850, 300, 'Stage_2', (255, 0, 0))
+    else:
+        font.draw(850, 300, 'Stage_2', (255, 0, 255))
+    if server.Mario_Att < 50:
+        font.draw(1070, 300, 'Stage_3', (255, 0, 0))
+    else:
+        font.draw(1070, 300, 'Stage_3', (255, 0, 255))
     update_canvas()
 
 def update():

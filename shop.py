@@ -170,7 +170,7 @@ def head_collide(a,b):
                 server.Mario_Coin -= server.Hp_Need_Money
                 server.Hp_Need_Money += 5
             elif tiles.att_start <= b.tile <= tiles.att_start +3:
-                server.Mario_Att += 10
+                server.Mario_Att += 5
                 server.Mario_Coin -= server.Att_Need_Money
                 server.Att_Need_Money += 7
             return True

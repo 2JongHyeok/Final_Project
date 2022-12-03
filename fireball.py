@@ -49,19 +49,14 @@ class FireBall:
             self.y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity * 0.15
 
-        # for i in server.tiles:
-        #     if 0 < i.tile < 8 or 12 < i.tile:
-        #         if 0 <= i.x <= 1600:
-        #             if side_collide(self, i):
-        #                 for j in game_world.all_objects():
-        #                     if j == self:
-        #                         game_world.remove_object(self)
 
         for block in server.tiles:
             if 0 < block.tile < 8 or 12 < block.tile:
                 if 0 <= block.x <= 1600:
                     if side_collide(self, block):
-                        game_world.remove_object(self)
+                        for i in game_world.all_objects():
+                            if i == self:
+                                game_world.remove_object(self)
 
         for block in server.tiles:
             if 0 <= block.x <= 1600:
