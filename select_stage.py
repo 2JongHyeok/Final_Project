@@ -44,6 +44,7 @@ def exit():
     global image, change_stage
     del image
     change_stage = False
+    server.mario.in_select_stage = False
     game_world.clear()
 
 

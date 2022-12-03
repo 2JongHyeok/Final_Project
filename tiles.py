@@ -1,8 +1,13 @@
 from pico2d import *
+
+import server
+
 max_map_size = 3200
 
 
 coin_start = 9
+hp_start = 23
+att_start = 28
 
 class Tiles:
     Grass_Left = None
@@ -27,10 +32,16 @@ class Tiles:
     Stage_2_Left_Pipe = None
     Stage_3_Right_Pipe = None
     Stage_3_Left_Pipe = None
-    Item_block_1 = None
-    Item_block_2 = None
-    Item_block_3 = None
-    Item_block_4 = None
+    Hp_block_1 = None
+    Hp_block_2 = None
+    Hp_block_3 = None
+    Hp_block_4 = None
+    Hp_block_5 = None
+    Att_block_1 = None
+    Att_block_2 = None
+    Att_block_3 = None
+    Att_block_4 = None
+    Att_block_5 = None
 
 
     see = False
@@ -64,12 +75,24 @@ class Tiles:
             Tiles.Stage_2_Right_Pipe = load_image('./tilefiles/Pipe (2).png')  # 20
             Tiles.Stage_3_Left_Pipe = load_image('./tilefiles/Pipe (1).png')  # 21
             Tiles.Stage_3_Right_Pipe = load_image('./tilefiles/Pipe (2).png')  # 22
-            Tiles.Item_block_1 = load_image('./tilefiles/Item_Block (1).png') # 23
-            Tiles.Item_block_2 = load_image('./tilefiles/Item_Block (2).png') # 23
-            Tiles.Item_block_3 = load_image('./tilefiles/Item_Block (3).png') # 23
-            Tiles.Item_block_4 = load_image('./tilefiles/Item_Block (4).png') # 23
+            Tiles.Hp_block_1 = load_image('./tilefiles/Item_Block (1).png') # 23
+            Tiles.Hp_block_2 = load_image('./tilefiles/Item_Block (2).png') # 24
+            Tiles.Hp_block_3 = load_image('./tilefiles/Item_Block (3).png') # 25
+            Tiles.Hp_block_4 = load_image('./tilefiles/Item_Block (4).png') # 26
+            Tiles.Hp_block_5 = load_image('./tilefiles/Item_Block (5).png') # 27
+            Tiles.Att_block_1 = load_image('./tilefiles/Item_Block (1).png') # 28
+            Tiles.Att_block_2 = load_image('./tilefiles/Item_Block (2).png') # 29
+            Tiles.Att_block_3 = load_image('./tilefiles/Item_Block (3).png') # 30
+            Tiles.Att_block_4 = load_image('./tilefiles/Item_Block (4).png') # 31
+            Tiles.Att_block_5 = load_image('./tilefiles/Item_Block (5).png') # 32
 
     def update(self):
+        if server.Hp_Need_Money > server.Mario_Coin:
+            if hp_start <= self.tile <= hp_start + 3:
+                self.tile = hp_start + 4
+        if server.Att_Need_Money > server.Mario_Coin:
+            if att_start <= self.tile <= att_start + 3:
+                self.tile = att_start + 4
         self.timer -= 1
         if self.timer == 0:
             if self.tile == coin_start:
@@ -80,6 +103,22 @@ class Tiles:
                 self.tile = coin_start + 3
             elif self.tile == coin_start + 3:
                 self.tile = coin_start
+            elif self.tile == hp_start:
+                self.tile = hp_start + 1
+            elif self.tile == hp_start + 1:
+                self.tile = hp_start + 2
+            elif self.tile == hp_start + 2:
+                self.tile = hp_start + 3
+            elif self.tile == hp_start + 3:
+                self.tile = hp_start
+            elif self.tile == att_start:
+                self.tile = att_start + 1
+            elif self.tile == att_start + 1:
+                self.tile = att_start + 2
+            elif self.tile == att_start + 2:
+                self.tile = att_start + 3
+            elif self.tile == att_start + 3:
+                self.tile = att_start
             self.timer = 100
 
     def draw(self):
@@ -130,7 +169,26 @@ class Tiles:
             Tiles.Stage_3_Left_Pipe.draw(self.x, self.y, 40, 40)
         if self.tile == 22:
             Tiles.Stage_3_Right_Pipe.draw(self.x, self.y, 40, 40)
-
+        if self.tile == 23:
+            Tiles.Hp_block_1.draw(self.x, self.y, 40, 40)
+        if self.tile == 24:
+            Tiles.Hp_block_2.draw(self.x, self.y, 40, 40)
+        if self.tile == 25:
+            Tiles.Hp_block_3.draw(self.x, self.y, 40, 40)
+        if self.tile == 26:
+            Tiles.Hp_block_4.draw(self.x, self.y, 40, 40)
+        if self.tile == 27:
+            Tiles.Hp_block_5.draw(self.x, self.y, 40, 40)
+        if self.tile == 28:
+            Tiles.Att_block_1.draw(self.x, self.y, 40, 40)
+        if self.tile == 29:
+            Tiles.Att_block_2.draw(self.x, self.y, 40, 40)
+        if self.tile == 30:
+            Tiles.Att_block_3.draw(self.x, self.y, 40, 40)
+        if self.tile == 31:
+            Tiles.Att_block_4.draw(self.x, self.y, 40, 40)
+        if self.tile == 32:
+            Tiles.Att_block_5.draw(self.x, self.y, 40, 40)
 
         if self.see and self.tile > 0:
             if self.x >= - 50 and self.x <= 1650:

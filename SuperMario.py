@@ -5,6 +5,7 @@ import play_state
 import select_stage
 import server
 import game_world
+import shop
 
 # 이벤트 정의
 RD, LD, UD, DD, SD, RU, LU, UU, DU, SU, SPACE, K1, K2, SUICIDE = range(14)
@@ -76,6 +77,12 @@ class IDLE:
         if self.JUMPING:
             self.real_mario_y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity *0.15
+            if self.in_shop:
+                for i in range(6):
+                    for j in range(40):
+                        shop.head_collide(server.mario, server.tiles[i * 40 + j])
+            if self.head_collision:
+                self.JUMPING = False
             if self.y_velocity <= 0:
                 self.JUMPING = False
         else:
@@ -209,6 +216,12 @@ class WALK:
         if self.JUMPING:
             self.real_mario_y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity *0.15
+            if self.in_shop:
+                for i in range(6):
+                    for j in range(40):
+                        shop.head_collide(server.mario, server.tiles[i * 40 + j])
+            if self.head_collision:
+                self.JUMPING = False
             if self.y_velocity <= 0:
                 self.JUMPING = False
         else:
@@ -288,9 +301,7 @@ class DIE:
     def draw(self):
         MARIO.small_image['Die'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
 
-def fire_ball(self):
-    ball = Ball(self.x, self.y, self.dir * RUN_SPEED_PPS * 10)
-    game_world.add_object(ball, 1)
+
 
 class SHOPPING:
     def enter(self, event):
@@ -353,6 +364,9 @@ class MARIO:
         self.stage_2_pipe = False
         self.stage_3_pipe = False
         self.sit = False
+        self.head_collision = False
+        self.in_shop = False
+        self.font = load_font('ENCR10B.TTF', 40)
 
 
     def update(self):
@@ -373,15 +387,13 @@ class MARIO:
 
 
 
-
-
-
-
-
     def draw(self):
         self.cur_state.draw(self)
         if self.see:
             draw_rectangle(*self.get_rect())
+        self.font.draw(1300, 750, 'MONEY : %d' %server.Mario_Coin, (255, 255, 0))
+        self.font.draw(1300, 700, 'HP : %d' % server.Mario_Hp, (255, 255, 0))
+        self.font.draw(1300, 650, 'ATT : %d' % server.Mario_Att, (255, 255, 0))
         debug_print('PPPP')
         debug_print(f'Face Dir: {self.face_dir}, Dir: {self.dir}')
 
@@ -392,6 +404,10 @@ class MARIO:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
+
+    def fire_ball(self):
+        ball = Ball(self.x, self.y, self.dir * RUN_SPEED_PPS * 10)
+        game_world.add_object(ball, 1)
 
     def get_bb(self):
         if self.small_mario:
@@ -407,7 +423,10 @@ class MARIO:
         if not self.suicide:
             if not self.JUMPING:
                 self.y_velocity = 0
-                self.real_mario_y = other.y + 42
+                if not self.head_collision:
+                    self.real_mario_y = other.y + 42
+                else:
+                    self.head_collision = False
                 if 13 <= other.tile <= 14:
                     self.select_pipe = True
                 elif 15 <= other.tile <= 16:
