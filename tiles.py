@@ -86,6 +86,10 @@ class Tiles:
             Tiles.Att_block_4 = load_image('./tilefiles/Item_Block (4).png') # 31
             Tiles.Att_block_5 = load_image('./tilefiles/Item_Block (5).png') # 32
 
+        self.bgm = load_music('bgm.mp3')
+        self.bgm.set_volume(32)
+        self.bgm.repeat_play()
+
     def update(self):
         if server.Hp_Need_Money > server.Mario_Coin:
             if hp_start <= self.tile <= hp_start + 3:

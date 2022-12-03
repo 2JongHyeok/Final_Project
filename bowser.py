@@ -48,7 +48,7 @@ class Bowser:
         self.dir = -1
         self.speed = 100
         self.frame = 0
-        self.HP = 1000
+        self.HP = 100000
         self.FALLING = True
         self.y_gravity = 1
         self.y_velocity = 0
