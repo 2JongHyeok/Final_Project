@@ -45,7 +45,7 @@ class Turtle:
         self.fixed_x = random.randint (300, 1000)
         self.y = 300
         self.x = self.fixed_x
-        self.col = random.randint(0, 4)
+        self.col = random.randint(0, 3)
         self.load_images()
         self.dir = -1
         self.speed = 0.0001
@@ -81,6 +81,9 @@ class Turtle:
             if self.FALLING:
                 self.y += self.y_velocity * 0.2
                 self.y_velocity -= self.y_gravity * 0.15
+            self.x = clamp(0, self.x, 1200)
+            if self.x >= 1200:
+                self.dir = -self.dir
 
             self.FALLING = False
             for i in server.tiles:

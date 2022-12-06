@@ -23,10 +23,17 @@ def handle_events():
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             if server.Mario_Hp > 0:
                 game_framework.change_state(select_stage)
+            else:
+                game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            if server.cleartime == 5:
+                game_framework.quit()
+            if server.Mario_Hp > 0:
+                game_framework.change_state(select_stage)
+            elif server.clear:
+                game_framework.quit()
             else:
                 game_framework.quit()
 def draw():

@@ -7,8 +7,8 @@ class BackGround:
     def __init__(self):
         if self.starmap_1 == None:
             self.starmap_1 = load_image('./backgroundfiles/Star (1).png')
-            self.starmap_2 = load_image('./backgroundfiles/Star (1).png')
-            self.starmap_3 = load_image('./backgroundfiles/Star (1).png')
+            self.starmap_2 = load_image('./backgroundfiles/Star (2).png')
+            self.starmap_3 = load_image('./backgroundfiles/Star (3).png')
             self.mansion_1 = load_image('./backgroundfiles/Mansion (1).png')
             self.mansion_2 = load_image('./backgroundfiles/Mansion (2).png')
         self.stage = 1

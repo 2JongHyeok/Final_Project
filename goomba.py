@@ -95,6 +95,7 @@ class Goomba:
                             game_world.remove_object(fire)
                     self.HP -= server.Mario_Att
                     server.fireball.remove(fire)
+            self.x = clamp(0, self.x, 2000)
         else:
             if self.first:
                 server.Mario_Coin += 5

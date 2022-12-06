@@ -3,6 +3,7 @@ import random
 import math
 import game_framework
 import game_world
+import play_state
 from BehaviorTree import BehaviorTree, SelectorNode, SequenceNode, LeafNode
 import server
 
@@ -48,7 +49,7 @@ class Bowser:
         self.dir = -1
         self.speed = 100
         self.frame = 0
-        self.HP = 100000
+        self.HP = 10000
         self.FALLING = True
         self.y_gravity = 1
         self.y_velocity = 0
@@ -94,11 +95,16 @@ class Bowser:
                             game_world.remove_object(fire)
                     self.HP -= server.Mario_Att
                     server.fireball.remove(fire)
+            server.clear = False
+            play_state.map = 0
+            self.x = clamp(0, self.x, 1500)
         else:
             if self.first:
                 server.clear = True
                 server.Mario_Coin += 10000
+                server.cleartime += 1
                 self.first = False
+
 
 
 

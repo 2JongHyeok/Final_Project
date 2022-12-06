@@ -49,6 +49,7 @@ def exit():
     server.mario.in_select_stage = False
     game_world.clear()
     server.tiles = []
+    server.fireball = []
 
 
 

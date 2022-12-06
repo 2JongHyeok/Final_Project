@@ -39,7 +39,7 @@ key_event_table = {
 class IDLE:
     def enter(self, event):
         global need_frame
-        print('ENTER IDLE')
+        # print('ENTER IDLE')
         if self.dir == 1:
             if self.small_mario:
                 need_frame = 5
@@ -141,7 +141,7 @@ class IDLE:
 class WALK:
     def enter(self, event):
         global need_frame
-        print('ENTER WALK')
+        # print('ENTER WALK')
         if event == SD:
             self.RUNNING = True
         if event == SU:
@@ -166,7 +166,7 @@ class WALK:
                 need_frame = 4
 
     def exit(self, event):
-        print('EXIT WALK')
+        # print('EXIT WALK')
         self.face_dir = self.dir
         if self.floor:
             if event == UU or event == UD:
@@ -218,8 +218,10 @@ class WALK:
         else:
             if self.real_mario_x < 800:
                 self.draw_mario_x = self.real_mario_x
-            elif self.real_mario_x > 2370:
-                self.draw_mario_x = self.real_mario_x - 1600
+            elif self.real_mario_x < 2400:
+                self.draw_mario_x = 800
+            elif self.real_mario_x >= 2400:
+                self.draw_mario_x = self.real_mario_x- 1600
         if self.JUMPING:
             self.real_mario_y += self.y_velocity * 0.2
             self.y_velocity -= self.y_gravity *0.15
@@ -309,22 +311,6 @@ class DIE:
         MARIO.small_image['Die'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
 
 
-
-class SHOPPING:
-    def enter(self, event):
-        pass
-
-    def exit(self, event):
-        pass
-
-    def do(self):
-        self.real_mario_y += self.y_velocity * 0.2
-        self.y_velocity -= self.y_gravity * 0.15
-
-    def draw(self):
-        MARIO.small_image['Die'][int(self.frame)].draw(self.draw_mario_x, self.real_mario_y, sm_w, sm_h)
-
-
 class MARIO:
     small_image = None
     big_image = None
@@ -342,7 +328,7 @@ class MARIO:
         self.load_images()
         self.draw_mario_x = 100
         self.real_mario_x = 100
-        self.real_mario_y = 500
+        self.real_mario_y = 200
         self.dir, self.face_dir = 0, 1
         self.y_gravity = 1
         self.jump_height = 15
@@ -396,9 +382,14 @@ class MARIO:
                     if monster_collision(self, i):
                         if i.HP > 0:
                             server.Mario_Hp -= 1
+            if server.turtle:
+                for i in server.turtle:
+                    if monster_collision(self, i):
+                        if i.HP > 0:
+                            server.Mario_Hp -= 2
         if play_state.map == 3:
             if monster_collision(server.mario, server.bowser):
-                server.Mario_Hp -= 1
+                server.Mario_Hp -= 10
         if server.Mario_Hp < 0:
             game_framework.change_state(title)
 
@@ -409,9 +400,10 @@ class MARIO:
         self.cur_state.draw(self)
         if self.see:
             draw_rectangle(*self.get_rect())
-        self.font.draw(1300, 750, 'MONEY : %d' %server.Mario_Coin, (255, 255, 0))
-        self.font.draw(1300, 700, 'HP : %d' % server.Mario_Hp, (255, 255, 0))
-        self.font.draw(1300, 650, 'ATT : %d' % server.Mario_Att, (255, 255, 0))
+        self.font.draw(1200, 750, 'MONEY : %d' %server.Mario_Coin, (255, 255, 0))
+        self.font.draw(1200, 700, 'HP : %d' % server.Mario_Hp, (255, 255, 0))
+        self.font.draw(1200, 650, 'ATT : %d' % server.Mario_Att, (255, 255, 0))
+        self.font.draw(1200, 600, 'Bowser Kill : %d' % server.cleartime, (255, 255, 0))
         debug_print('PPPP')
         debug_print(f'Face Dir: {self.face_dir}, Dir: {self.dir}')
 

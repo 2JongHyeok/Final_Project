@@ -54,6 +54,7 @@ def exit():
     server.bowser = None
     server.tiles = []
     game_world.clear()
+    server.fireball = []
 
 
 def handle_events():
@@ -94,7 +95,7 @@ def draw():
     else:
         font.draw(900, 350, '(Need Money : %d)' % server.Att_Need_Money, (255, 255, 0))
     font.draw(990, 300, 'ATT UP', (255, 255, 0))
-    font.draw(1030, 270, '+ 5', (255, 255, 0))
+    font.draw(1030, 270, '+ 10', (255, 255, 0))
     update_canvas()
 
 def update():
@@ -174,7 +175,7 @@ def head_collide(a,b):
                 server.Mario_Coin -= server.Hp_Need_Money
                 server.Hp_Need_Money += 5
             elif tiles.att_start <= b.tile <= tiles.att_start +3:
-                server.Mario_Att += 5
+                server.Mario_Att += 10
                 server.Mario_Coin -= server.Att_Need_Money
                 server.Att_Need_Money += 7
             return True
